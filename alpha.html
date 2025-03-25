@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPORTIFY | The Future of Indian Sports</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.4/vue.global.prod.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;600;700;900&display=swap');
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #000;
+            color: #fff;
+            overflow-x: hidden;
+        }
+        
+        h1, h2, h3, h4, .heading-font {
+            font-family: 'Bebas Neue', sans-serif;
+            letter-spacing: 1px;
+        }
+        
+        .neon-text {
+            text-shadow: 0 0 5px #FBF5E5, 0 0 10px #FBF5E5, 0 0 15px #A35C7A, 0 0 20px #A35C7A;
+            animation: neon-pulse 1.5s infinite alternate;
+        }
+        
+        @keyframes neon-pulse {
+            from {
+                text-shadow: 0 0 5px #FBF5E5, 0 0 10px #FBF5E5, 0 0 15px #A35C7A, 0 0 20px #A35C7A;
+            }
+            to {
+                text-shadow: 0 0 10px #FBF5E5, 0 0 20px #FBF5E5, 0 0 30px #A35C7A, 0 0 40px #A35C7A;
+            }
+        }
+        
+        .vhs-effect {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .vhs-effect:before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.3);
+            animation: vhs-scan 8s linear infinite;
+            pointer-events: none;
+            z-index: 10;
+        }
+        
+        @keyframes vhs-scan {
+            0% {
+                transform: translateY(-100px);
+            }
+            100% {
+                transform: translateY(100vh);
+            }
+        }
+        
+        .glitch-img {
+            position: relative;
+        }
+        
+        .glitch-img:after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 5px;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(163, 92, 122, 0.2);
+            mix-blend-mode: overlay;
+        }
+        
+        .paint-splash {
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><path fill="%23A35C7A" d="M41.3,-67.7C52.1,-60.5,58.9,-46.6,65.8,-32.6C72.8,-18.6,80,-4.4,79.4,9.4C78.9,23.3,70.6,36.8,59.8,46.9C48.9,57,35.5,63.6,21.4,68.9C7.3,74.2,-7.5,78.1,-20.8,74.9C-34,71.8,-45.7,61.5,-55.4,49.7C-65.2,37.9,-73,24.6,-76.9,9.5C-80.8,-5.7,-80.9,-22.6,-73.6,-35.2C-66.3,-47.8,-51.5,-56,-37.2,-62.2C-22.9,-68.4,-9.1,-72.5,3.9,-78.6C16.9,-84.7,30.5,-75,41.3,-67.7Z" transform="translate(100 100)" /></svg>') no-repeat center center;
+            background-size: contain;
+        }
+        
+        .noise-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.03;
+            background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAMAAAAp4XiDAAAAUVBMVEWFhYWDg4N3d3dtbW17e3t1dXWBgYGHh4d5eXlzc3OLi4ubm5uVlZWPj4+NjY19fX2JiYl/f39ra2uRkZGZmZlpaWmXl5dvb29xcXGTk5NnZ2c8TV1mAAAAG3RSTlNAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEAvEOwtAAAFVklEQVR4XpWWB67c2BUFb3g557T/hRo9/WUMZHlgr4Bg8Z4qQgQJlHI4A8SzFVrapvmTF9O7dmYRFZ60YiBhJRCgh1FYhiLAmdvX0CzTOpNE77ME0Zty/nWWzchDtiqPLZ1F56Q9eO8OK3rPkNiXn98OvC+PodHvnBqClS4x1xnQowCm0gIKbVgN+qNbxUF8n5PTZMrKxjA7rHDV1S7fgBE2HsP5s7qrlGMBsaUQ9fYw9bZA4bSrChQ11/DO5i7I7H4LlCYCgcMBKYIXeFkUFYGCRZ+FZN8haCFDYa8wdIUDxzX8pFfD6fgzWA5FcYIoCRdE2jm8Z6PJA1I15OzP9YX9jkOwooxH2BkhGAzBtL1tP/eVNuMqbWwhx/Nj/nZAl3lKOXqUgxdLj8vQZ4i5Cz7FkzJc4pEuDSH78EC4ZvCZA5g2L/ML+JK5AlPBeGaGLQ3E7uwB31C3PQKhj9kmAEg9JmnWD4HsVW9FnZk21xAwTPPNssxNlLYw== 1QhPgXQrKEQEQERETmEIBiT4TrCFERm40IgJ0EUUEoRghQ+KIcIJ24AITcQIcFQESBtaJqQPkC+AICROcLUSESAkEYjEkEWcB5xOBH4gjAjlQQEMcCIaPBr9FBQBZEB5QEQEAOw==');
+            animation: noise 0.3s steps(1) infinite;
+        }
+        
+        @keyframes noise {
+            0%, 100% { transform: translate(0,0) }
+            10% { transform: translate(-1%,-1%) }
+            20% { transform: translate(1%,1%) }
+            30% { transform: translate(-2%,-2%) }
+            40% { transform: translate(3%,3%) }
+            50% { transform: translate(-3%,-3%) }
+            60% { transform: translate(2%,2%) }
+            70% { transform: translate(-1%,-1%) }
+            80% { transform: translate(1%,1%) }
+            90% { transform: translate(-1%,-1%) }
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div class="noise-bg"></div>
+        
+        <!-- Hero Section -->
+        <header class="h-screen flex items-center justify-center relative overflow-hidden vhs-effect">
+            <div class="absolute inset-0 z-0">
+                <img src="https://www.shutterstock.com/image-photo/ready-jump-africanamerican-young-basketball-600nw-1907637352.jpg" alt="Sports Montage" class="w-full h-full object-cover opacity-40">
+            </div>
+            
+            <div class="absolute inset-0 bg-gradient-to-b from-transparent to-black z-10"></div>
+            
+            <div class="container mx-auto px-4 relative z-20 text-center">
+                <div class="mb-4 transform -rotate-3">
+                    <h1 class="text-7xl md:text-9xl font-black neon-text mb-2">SPORTIFY</h1>
+                    <div class="bg-[#A35C7A] h-2 w-32 mx-auto mb-8"></div>
+                </div>
+                
+                <h2 class="text-2xl md:text-4xl font-bold mb-6 transform rotate-1">GO FROM NOBODY TO LEGEND</h2>
+                
+                <p class="text-xl md:text-2xl mb-12 max-w-2xl mx-auto">India's first platform where <span class="text-[#A35C7A] font-bold">ANY ATHLETE</span> can broadcast their game and <span class="text-[#A35C7A] font-bold">GET DISCOVERED</span></p>
+                
+                <div class="flex flex-col sm:flex-row gap-6 justify-center mb-16">
+                    <a href="#waitlist" class="bg-[#A35C7A] hover:bg-[#C890A7] text-white px-8 py-4 rounded-lg font-bold text-lg tracking-wider transform transition-all duration-300 hover:scale-105 hover:-rotate-2">JOIN WAITLIST</a>
+                    <a href="#how" class="bg-transparent border-2 border-white text-white px-8 py-4 rounded-lg font-bold text-lg tracking-wider hover:bg-white hover:text-black transform transition-all duration-300 hover:scale-105 hover:rotate-2">HOW IT WORKS</a>
+                </div>
+                
+                <div class="text-sm uppercase tracking-widest">Launching July 2025</div>
+            </div>
+        </header>
+
+        <!-- Problem Section -->
+        <section class="py-20 bg-[#212121] relative">
+            <div class="container mx-auto px-4">
+                <div class="max-w-4xl mx-auto">
+                    <h2 class="text-6xl font-bold mb-12 transform -rotate-2">THE <span class="text-[#A35C7A]">PROBLEM</span></h2>
+                    
+                    <div class="grid md:grid-cols-3 gap-8">
+                        <div class="bg-black p-6 rounded transform transition-all duration-300 hover:scale-105 hover:rotate-1">
+                            <h3 class="text-3xl font-bold mb-4 text-[#C890A7]">INVISIBLE</h3>
+                            <p class="text-lg">You could be the next Virat Kohli, but if no one sees you play, you'll remain unknown forever.</p>
+                        </div>
+                        
+                        <div class="bg-black p-6 rounded transform transition-all duration-300 hover:scale-105 hover:-rotate-1">
+                            <h3 class="text-3xl font-bold mb-4 text-[#C890A7]">NO PLATFORM</h3>
+                            <p class="text-lg">Local tournaments, college games, neighborhood matches - all happening with ZERO visibility.</p>
+                        </div>
+                        
+                        <div class="bg-black p-6 rounded transform transition-all duration-300 hover:scale-105 hover:rotate-1">
+                            <h3 class="text-3xl font-bold mb-4 text-[#C890A7]">WASTED TALENT</h3>
+                            <p class="text-lg">India has 1.4 billion people but only celebrates a handful of sports stars. The rest? Forgotten.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Solution Section -->
+        <section id="how" class="py-20 bg-black relative">
+            <div class="container mx-auto px-4">
+                <h2 class="text-6xl font-bold mb-16 transform rotate-1 text-center">THE <span class="text-[#A35C7A]">SOLUTION</span></h2>
+                
+                <div class="max-w-5xl mx-auto">
+                    <div class="relative glitch-img mb-16 overflow-hidden rounded-lg">
+                        <img src="/api/placeholder/1000/500" alt="SPORTIFY App Interface" class="w-full">
+                    </div>
+                    
+                    <div class="grid md:grid-cols-2 gap-16 items-center">
+                        <div>
+                            <h3 class="text-4xl font-bold mb-6">BROADCAST <span class="text-[#A35C7A]">ANY GAME</span></h3>
+                            <ul class="space-y-6">
+                                <li class="flex">
+                                    <div class="text-3xl font-bold text-[#A35C7A] mr-4">01</div>
+                                    <div>
+                                        <div class="text-xl font-bold mb-2">EASY SETUP</div>
+                                        <p>Just your phone and our app. No fancy equipment needed. Set up and start streaming in 2 minutes.</p>
+                                    </div>
+                                </li>
+                                
+                                <li class="flex">
+                                    <div class="text-3xl font-bold text-[#A35C7A] mr-4">02</div>
+                                    <div>
+                                        <div class="text-xl font-bold mb-2">SMART ANALYTICS</div>
+                                        <p>Our AI tracks player movements and generates highlight reels automatically. Your best moments, captured.</p>
+                                    </div>
+                                </li>
+                                
+                                <li class="flex">
+                                    <div class="text-3xl font-bold text-[#A35C7A] mr-4">03</div>
+                                    <div>
+                                        <div class="text-xl font-bold mb-2">GET DISCOVERED</div>
+                                        <p>Scouts, coaches and fans can find you through our platform. From local hero to national sensation.</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-4xl font-bold mb-6"><span class="text-[#A35C7A]">WATCH</span> REAL TALENT</h3>
+                            <ul class="space-y-6">
+                                <li class="flex">
+                                    <div class="text-3xl font-bold text-[#A35C7A] mr-4">04</div>
+                                    <div>
+                                        <div class="text-xl font-bold mb-2">HYPERLOCAL FOCUS</div>
+                                        <p>Discover games happening in your neighborhood, city, or state. Support your local talent.</p>
+                                    </div>
+                                </li>
+                                
+                                <li class="flex">
+                                    <div class="text-3xl font-bold text-[#A35C7A] mr-4">05</div>
+                                    <div>
+                                        <div class="text-xl font-bold mb-2">COMMUNITY RATING</div>
+                                        <p>Like what you see? Rate players and help them rise through the ranks. Your votes matter.</p>
+                                    </div>
+                                </li>
+                                
+                                <li class="flex">
+                                    <div class="text-3xl font-bold text-[#A35C7A] mr-4">06</div>
+                                    <div>
+                                        <div class="text-xl font-bold mb-2">SUPPORT ATHLETES</div>
+                                        <p>Tip your favorite players or buy virtual tickets to games. Direct support, no middlemen.</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sports Section -->
+        <section class="py-20 bg-[#A35C7A]">
+            <div class="container mx-auto px-4 text-center">
+                <h2 class="text-6xl font-bold mb-16">ALL SPORTS. ALL ATHLETES.</h2>
+                
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
+                    <div class="bg-black bg-opacity-20 p-6 rounded-lg transform transition-all duration-300 hover:scale-110 hover:-rotate-3">
+                        <div class="text-5xl font-bold">CRICKET</div>
+                    </div>
+                    
+                    <div class="bg-black bg-opacity-20 p-6 rounded-lg transform transition-all duration-300 hover:scale-110 hover:rotate-3">
+                        <div class="text-5xl font-bold">BASKETBALL</div>
+                    </div>
+                    
+                    <div class="bg-black bg-opacity-20 p-6 rounded-lg transform transition-all duration-300 hover:scale-110 hover:-rotate-3">
+                        <div class="text-5xl font-bold">FOOTBALL</div>
+                    </div>
+                    
+                    <div class="bg-black bg-opacity-20 p-6 rounded-lg transform transition-all duration-300 hover:scale-110 hover:rotate-3">
+                        <div class="text-5xl font-bold">KABADDI</div>
+                    </div>
+                </div>
+                
+                <p class="text-xl mt-12">And many more...</p>
+            </div>
+        </section>
+
+        <!-- Waitlist Section -->
+        <section id="waitlist" class="py-20 bg-black">
+            <div class="container mx-auto px-4">
+                <div class="max-w-3xl mx-auto text-center">
+                    <h2 class="text-6xl font-bold mb-6 transform -rotate-2">GET <span class="text-[#A35C7A]">EARLY ACCESS</span></h2>
+                    <p class="text-xl mb-12">Join the waitlist to be one of the first athletes or fans on the platform.</p>
+                    
+                    <div class="bg-[#212121] p-8 rounded-lg">
+                        <form class="space-y-6">
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div>
+                                    <input type="text" placeholder="NAME" class="w-full p-4 rounded bg-black text-white border border-[#A35C7A] focus:outline-none focus:ring-2 focus:ring-[#A35C7A]" required>
+                                </div>
+                                <div>
+                                    <input type="email" placeholder="EMAIL" class="w-full p-4 rounded bg-black text-white border border-[#A35C7A] focus:outline-none focus:ring-2 focus:ring-[#A35C7A]" required>
+                                </div>
+                            </div>
+                            <div>
+                                <select class="w-full p-4 rounded bg-black text-white border border-[#A35C7A] focus:outline-none focus:ring-2 focus:ring-[#A35C7A]">
+                                    <option value="">I AM A...</option>
+                                    <option value="athlete">Athlete</option>
+                                    <option value="fan">Sports Fan</option>
+                                    <option value="coach">Coach/Trainer</option>
+                                    <option value="scout">Scout/Recruiter</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div class="text-center">
+                                <button type="submit" class="bg-[#A35C7A] hover:bg-[#C890A7] text-white px-12 py-4 rounded-lg font-bold text-lg tracking-wider transform transition-all duration-300 hover:scale-105 hover:-rotate-2">JOIN WAITLIST</button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <p class="text-sm mt-6 text-gray-400">By joining, you'll get exclusive updates and early access to the beta.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Mamba Quote Section -->
+        <section class="py-16 bg-gradient-to-r from-[#212121] to-black text-center relative overflow-hidden">
+            <div class="container mx-auto px-4 relative z-10">
+                <blockquote class="text-3xl md:text-5xl font-bold italic mb-6">
+                    "You want fame? Work for it."
+                </blockquote>
+                <p class="text-xl text-[#A35C7A]">- The Mamba Mentality</p>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="bg-black text-white py-12">
+            <div class="container mx-auto px-4 text-center">
+                <div class="text-5xl font-bold neon-text mb-6">SPORTIFY</div>
+                <p class="mb-4">© 2025 SPORTIFY. The future of Indian sports.</p>
+                <p class="text-lg font-bold text-[#A35C7A]">"SEE YOURSELF. BE SEEN."</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        const app = Vue.createApp({
+            data() {
+                return {
+                    // Data here if needed
+                }
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>
