@@ -1,802 +1,1690 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SPORTYFY.LIVE | Broadcast Your Game</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SPORTYFY.LIVE | BROADCAST YOUR GAME. CLAIM YOUR FAME.</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.4/vue.global.prod.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
     <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        navy: '#19204E',
-                        crimson: '#DF1B3F',
-                        silver: '#D6D6D6',
-                        gold: '#FCB300',
-                    },
-                    fontFamily: {
-                        display: ['Rajdhani', 'sans-serif'],
-                        body: ['Space Grotesk', 'sans-serif'],
-                    },
-                }
-            }
-        }
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              "sporty-red": "#FF0000",
+              "sporty-black": "#111111",
+            },
+            fontFamily: {
+              sporty: ["Oswald", "sans-serif"],
+            },
+            animation: {
+              "pulse-fast": "pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+            },
+          },
+        },
+      };
     </script>
-    
+    <link
+      href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
     <style>
-        /* Base Styles */
-        body {
-            background-color: #19204E;
-            color: white;
-            font-family: 'Space Grotesk', sans-serif;
-            overflow-x: hidden;
+      body {
+        font-family: "Oswald", sans-serif;
+        background-color: #111111;
+        color: white;
+        overflow-x: hidden;
+      }
+
+      .noise-bg {
+        position: relative;
+      }
+
+      .noise-bg::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        opacity: 0.05;
+        pointer-events: none;
+        z-index: 1;
+      }
+
+      .glitch-text {
+        position: relative;
+        display: inline-block;
+      }
+
+      .glitch-text::before,
+      .glitch-text::after {
+        content: attr(data-text);
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+      }
+
+      .glitch-text::before {
+        left: 2px;
+        text-shadow: -1px 0 #ff1744;
+        clip: rect(44px, 450px, 56px, 0);
+        animation: glitch-anim 5s infinite linear alternate-reverse;
+      }
+
+      .glitch-text::after {
+        left: -2px;
+        text-shadow: -1px 0 #ff1744;
+        clip: rect(44px, 450px, 56px, 0);
+        animation: glitch-anim2 5s infinite linear alternate-reverse;
+      }
+
+      @keyframes glitch-anim {
+        0% {
+          clip: rect(31px, 9999px, 94px, 0);
         }
-        
-        /* Special Effects */
-        #noise-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 100;
-            opacity: 0.035;
-            pointer-events: none;
-            background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAMAAAAp4XiDAAAAUVBMVEWFhYWDg4N3d3dtbW17e3t1dXWBgYGHh4d5eXlzc3OLi4ubm5uVlZWPj4+NjY19fX2JiYl/f39ra2uRkZGZmZlpaWmXl5dvb29xcXGTk5NnZ2c8TV1mAAAAG3RSTlNAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEAvEOwtAAAFVklEQVR4XpWWB67c2BUFb3g557T/hRo9/WUMZHlgr4Bg8Z4qQgQJlHI4A8SzFVrapvmTF9O7dmYRFZ60YiBhJRCgh1FYhiLAmdvX0CzTOpNE77ME0Zty/nWWzchDtiqPLZ1F56Q9eO8OK3rPkNiXn98OvC+PodHvnBqClS4x1xnQowCm0gIKbVgN+qNbxUF8n5PTZMrKxjA7rHDV1S7fgBE2HsP5s7qrlGMBsaUQ9fYw9bZA4bSrChQ11/DO5i7I7H4LlCYCgcMBKYIXeFkUFYGCRZ+FZN8haCFDYa8wdIUDxzX8pFfD6fgzWA5FcYIoCRdE2jm8Z6PJA1I15OzP9YX9jkOwooxH2BkhGAzBtL1tP/eVNuMqbWwhx/Nj/nZAl3lKOXqUgxdLj8vQZ4i5Cz7FkzJc4pEuDSH78EC4ZvCZA5g2L/ML+JK5AlPBeGaGLQ3E7uwB31C3PQKhj9kmAEg9JmnWD4HsVW9FnZk21xAwTPPNssxNlLYw== 1QhPgXQrKEQEQERETmEIBiT4TrCFERm40IgJ0EUUEoRghQ+KIcIJ24AITcQIcFQESBtaJqQPkC+AICROcLUSESAkEYjEkEWcB5xOBH4gjAjlQQEMcCIaPBr9FBQBZEB5QEQEAOw==');
-            animation: noise 0.2s steps(1) infinite;
+        5% {
+          clip: rect(70px, 9999px, 71px, 0);
         }
-        
-        #grid-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 99;
-            background-image: 
-                linear-gradient(rgba(223, 27, 63, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(223, 27, 63, 0.03) 1px, transparent 1px);
-            background-size: 35px 35px;
-            pointer-events: none;
+        10% {
+          clip: rect(29px, 9999px, 83px, 0);
         }
-        
-        @keyframes noise {
-            0%, 100% { transform: translate(0,0) }
-            10% { transform: translate(-1%,-1%) }
-            20% { transform: translate(1%,1%) }
-            30% { transform: translate(-1%,-1%) }
-            40% { transform: translate(1%,1%) }
-            50% { transform: translate(-1%,-1%) }
-            60% { transform: translate(1%,1%) }
-            70% { transform: translate(-1%,-1%) }
-            80% { transform: translate(1%,1%) }
-            90% { transform: translate(-1%,-1%) }
+        15% {
+          clip: rect(38px, 9999px, 58px, 0);
         }
-        
-        .live-dot {
-            animation: blink 1.5s infinite;
+        20% {
+          clip: rect(93px, 9999px, 59px, 0);
         }
-        
-        @keyframes blink {
-            0% { opacity: 1; }
-            50% { opacity: 0.3; }
-            100% { opacity: 1; }
+        25% {
+          clip: rect(1px, 9999px, 66px, 0);
         }
-        
-        .data-scanner {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background-color: rgba(252, 179, 0, 0.5);
-            box-shadow: 0 0 10px rgba(252, 179, 0, 0.5), 0 0 20px rgba(252, 179, 0, 0.3);
-            animation: scan 3s ease-in-out infinite;
+        30% {
+          clip: rect(69px, 9999px, 98px, 0);
         }
-        
-        @keyframes scan {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(100%); }
+        35% {
+          clip: rect(26px, 9999px, 72px, 0);
         }
-        
-        .pulse-btn {
-            animation: pulse 2s infinite;
+        40% {
+          clip: rect(45px, 9999px, 13px, 0);
         }
-        
-        @keyframes pulse {
-            0% {
-                box-shadow: 0 0 0 0 rgba(223, 27, 63, 0.4);
-            }
-            70% {
-                box-shadow: 0 0 0 15px rgba(223, 27, 63, 0);
-            }
-            100% {
-                box-shadow: 0 0 0 0 rgba(223, 27, 63, 0);
-            }
+        45% {
+          clip: rect(5px, 9999px, 98px, 0);
         }
+        50% {
+          clip: rect(53px, 9999px, 5px, 0);
+        }
+        55% {
+          clip: rect(52px, 9999px, 65px, 0);
+        }
+        60% {
+          clip: rect(60px, 9999px, 8px, 0);
+        }
+        65% {
+          clip: rect(84px, 9999px, 67px, 0);
+        }
+        70% {
+          clip: rect(83px, 9999px, 92px, 0);
+        }
+        75% {
+          clip: rect(1px, 9999px, 73px, 0);
+        }
+        80% {
+          clip: rect(18px, 9999px, 29px, 0);
+        }
+        85% {
+          clip: rect(10px, 9999px, 34px, 0);
+        }
+        90% {
+          clip: rect(19px, 9999px, 71px, 0);
+        }
+        95% {
+          clip: rect(33px, 9999px, 6px, 0);
+        }
+        100% {
+          clip: rect(1px, 9999px, 91px, 0);
+        }
+      }
+
+      @keyframes glitch-anim2 {
+        0% {
+          clip: rect(65px, 9999px, 99px, 0);
+        }
+        5% {
+          clip: rect(53px, 9999px, 56px, 0);
+        }
+        10% {
+          clip: rect(84px, 9999px, 59px, 0);
+        }
+        15% {
+          clip: rect(71px, 9999px, 11px, 0);
+        }
+        20% {
+          clip: rect(90px, 9999px, 92px, 0);
+        }
+        25% {
+          clip: rect(32px, 9999px, 51px, 0);
+        }
+        30% {
+          clip: rect(64px, 9999px, 88px, 0);
+        }
+        35% {
+          clip: rect(9px, 9999px, 56px, 0);
+        }
+        40% {
+          clip: rect(95px, 9999px, 59px, 0);
+        }
+        45% {
+          clip: rect(31px, 9999px, 52px, 0);
+        }
+        50% {
+          clip: rect(42px, 9999px, 15px, 0);
+        }
+        55% {
+          clip: rect(7px, 9999px, 80px, 0);
+        }
+        60% {
+          clip: rect(28px, 9999px, 16px, 0);
+        }
+        65% {
+          clip: rect(57px, 9999px, 44px, 0);
+        }
+        70% {
+          clip: rect(59px, 9999px, 71px, 0);
+        }
+        75% {
+          clip: rect(98px, 9999px, 68px, 0);
+        }
+        80% {
+          clip: rect(11px, 9999px, 2px, 0);
+        }
+        85% {
+          clip: rect(46px, 9999px, 15px, 0);
+        }
+        90% {
+          clip: rect(65px, 9999px, 24px, 0);
+        }
+        95% {
+          clip: rect(82px, 9999px, 13px, 0);
+        }
+        100% {
+          clip: rect(24px, 9999px, 73px, 0);
+        }
+      }
+
+      .live-dot {
+        animation: blink 1s infinite;
+      }
+
+      @keyframes blink {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.3;
+        }
+      }
+
+      .diagonal-section {
+        position: relative;
+        transform: skewY(-5deg);
+        margin: 4rem 0;
+        z-index: 10;
+      }
+
+      .diagonal-content {
+        transform: skewY(5deg);
+      }
+
+      .stats-counter {
+        font-family: "Oswald", sans-serif;
+        font-weight: 700;
+        font-size: 2.5rem;
+        line-height: 1;
+        color: white;
+        position: relative;
+        display: inline-block;
+      }
+
+      .stats-counter::after {
+        content: "";
+        position: absolute;
+        width: 110%;
+        height: 10px;
+        background-color: #ff1744;
+        bottom: 5px;
+        left: -5%;
+        z-index: -1;
+      }
+
+      .spinning-ball {
+        animation: spin 6s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .scroll-slider {
+        overflow-x: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+      }
+
+      .scroll-slider::-webkit-scrollbar {
+        display: none;
+      }
+
+      .scroll-slider-inner {
+        display: flex;
+        padding-bottom: 1rem;
+      }
+
+      .blob {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(60px);
+        z-index: 0;
+        animation: float 10s ease-in-out infinite;
+        opacity: 0.4;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0) scale(1);
+        }
+        50% {
+          transform: translateY(-20px) scale(1.05);
+        }
+      }
+
+      .quiz-option {
+        transition: all 0.3s ease;
+      }
+
+      .quiz-option:hover {
+        transform: translateY(-5px);
+      }
+
+      .stripe-bg {
+        background-image: repeating-linear-gradient(
+          -45deg,
+          #ff1744,
+          #ff1744 10px,
+          #111111 10px,
+          #111111 20px
+        );
+      }
+
+      .clippath-top {
+        clip-path: polygon(0 0, 100% 15%, 100% 100%, 0 100%);
+        margin-top: -100px;
+        padding-top: 100px;
+      }
+
+      .clippath-bottom {
+        clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+        margin-bottom: -100px;
+        padding-bottom: 100px;
+      }
+
+      .sports-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1rem;
+      }
+
+      @media (min-width: 768px) {
+        .sports-grid {
+          grid-template-columns: 25% 35% 40%;
+          grid-template-rows: repeat(2, 200px);
+        }
+
+        .sports-grid > div:nth-child(1) {
+          grid-column: 1;
+          grid-row: 1/3;
+        }
+
+        .sports-grid > div:nth-child(2) {
+          grid-column: 2;
+          grid-row: 1;
+        }
+
+        .sports-grid > div:nth-child(3) {
+          grid-column: 2;
+          grid-row: 2;
+        }
+
+        .sports-grid > div:nth-child(4) {
+          grid-column: 3;
+          grid-row: 1/3;
+        }
+      }
     </style>
-</head>
-<body>
-    <div id="app">
-        <div id="noise-overlay"></div>
-        <div id="grid-overlay"></div>
+  </head>
+  <body class="noise-bg">
+    <!-- NAVBAR -->
+    <nav
+      class="fixed top-0 left-0 w-full bg-sporty-black bg-opacity-90 z-50 border-b-4 border-sporty-red"
+    >
+      <div
+        class="container mx-auto px-4 py-3 flex justify-between items-center"
+      >
+        <div class="flex items-center">
+          <h1 class="text-3xl font-bold tracking-wider text-white">
+            <span class="glitch-text" data-text="SPORTYFY">SPORTYFY</span>
+            <span class="text-sporty-red">.LIVE</span>
+          </h1>
+        </div>
+        <div class="hidden md:flex space-x-8 items-center">
+          <a
+            href="#vision"
+            class="text-white font-semibold hover:text-sporty-red transition"
+            >VISION</a
+          >
+          <a
+            href="#how"
+            class="text-white font-semibold hover:text-sporty-red transition"
+            >HOW</a
+          >
+          <a
+            href="#sports"
+            class="text-white font-semibold hover:text-sporty-red transition"
+            >SPORTS</a
+          >
+          <span class="flex items-center">
+            <span
+              class="h-3 w-3 bg-sporty-red rounded-full inline-block mr-2 live-dot"
+            ></span>
+            <span class="text-sporty-red font-bold">LIVE</span>
+          </span>
+          <div class="flex space-x-4">
+            <a
+              href="#waitlist"
+              class="bg-sporty-red text-white px-6 py-2 font-bold hover:bg-white hover:text-sporty-red transition duration-300 transform hover:scale-105 flex items-center"
+            >
+              <span>JOIN</span>
+              <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+            <a
+              class="border-2 border-white px-3 py-1 text-white font-medium hover:bg-white hover:text-sporty-black transition"
+              >EN</a
+            >
+            <a
+              class="border-2 border-white px-3 py-1 text-white font-medium hover:bg-white hover:text-sporty-black transition"
+              >ગુજરાતી</a
+            >
+          </div>
+        </div>
+        <button class="md:hidden text-white text-2xl">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+    </nav>
 
-        <div class="loading-screen" id="loadingScreen" v-if="loading">
-            <div class="flex h-screen items-center justify-center">
-                <div class="text-center w-80">
-                    <div class="font-display text-4xl font-bold mb-6 text-crimson tracking-wider">SPORTYFY.LIVE</div>
-                    <div class="h-1 bg-gray-800 mb-4 overflow-hidden">
-                        <div class="h-full bg-crimson transition-all duration-300" :style="{ width: loadingProgress + '%' }"></div>
-                    </div>
-                    <div class="font-display text-sm tracking-wider text-silver uppercase">{{ loadingStatus }}</div>
-                </div>
-            </div>
+    <!-- HERO SECTION -->
+    <section class="min-h-screen pt-24 pb-16 relative overflow-hidden">
+      <div
+        class="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-sporty-black via-sporty-black to-transparent opacity-80 z-0"
+      ></div>
+      <div class="absolute top-0 left-0 w-full h-full overflow-hidden z-0">
+        <video
+          class="absolute w-full h-full object-cover opacity-40"
+          autoplay
+          loop
+          muted
+          playsinline
+        >
+          <source
+            src="./videos/cricket-night.mp4"
+            type="video/mp4"
+          />
+        </video>
+      </div>
+      <div class="container mx-auto px-4 relative z-10">
+        <div class="max-w-4xl mx-auto text-center mb-16">
+          <div class="inline-block relative mb-2">
+            <div
+              class="absolute -left-3 -top-3 w-12 h-12 border-t-4 border-l-4 border-sporty-red"
+            ></div>
+            <div
+              class="absolute -right-3 -bottom-3 w-12 h-12 border-b-4 border-r-4 border-sporty-red"
+            ></div>
+            <h2
+              class="text-lg md:text-xl font-bold bg-sporty-red px-4 py-1 inline-block"
+            >
+              LAUNCHING JULY 2025
+            </h2>
+          </div>
+          <h1
+            class="text-5xl md:text-7xl lg:text-8xl font-bold mb-4 leading-none tracking-tight"
+          >
+            <span class="block"
+              >STREAM YOUR MATCH</span
+            >
+            <span class="text-sporty-red">LIVE</span>
+          </h1>
+          <p class="text-xl md:text-2xl mb-8 text-gray-300 max-w-2xl mx-auto">
+            India's first web-based sports streaming platform.
+            <span class="font-bold">No app needed</span> - just point, stream,
+            and get <span class="font-bold text-sporty-red">discovered</span>.
+          </p>
+          <div
+            class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-6 justify-center"
+          >
+            <a
+              href="#waitlist"
+              class="bg-sporty-red text-white px-8 py-4 font-bold text-xl hover:bg-white hover:text-sporty-red transition duration-300 transform hover:scale-105 flex items-center justify-center"
+            >
+              <span>JOIN WAITLIST</span>
+              <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+            <a
+              href="#how"
+              class="border-2 border-white text-white px-8 py-4 font-bold text-xl hover:bg-white hover:text-sporty-black transition duration-300 flex items-center justify-center"
+            >
+              <span>HOW IT WORKS</span>
+              <i class="fas fa-chevron-down ml-2"></i>
+            </a>
+          </div>
         </div>
 
-        <header class="fixed top-0 left-0 w-full py-5 px-8 flex justify-between items-center z-50 transition-all duration-300" :class="{'bg-navy/95 backdrop-blur-md shadow-lg': scrolled}">
-            <div class="logo">
-                <a href="#" class="font-display text-2xl font-bold tracking-wider">
-                    <span class="text-crimson">SPORTYFY</span><span class="text-white">.LIVE</span>
-                </a>
+        <!-- LIVE STATS -->
+        <div
+          class="mt-12 max-w-4xl mx-auto bg-sporty-black bg-opacity-80 border-2 border-sporty-red p-6 rounded-lg relative overflow-hidden"
+        >
+          <div
+            class="absolute -right-16 -top-16 w-32 h-32 bg-sporty-red opacity-20 rounded-full"
+          ></div>
+          <div
+            class="absolute -left-16 -bottom-16 w-32 h-32 bg-sporty-red opacity-20 rounded-full"
+          ></div>
+
+          <div class="flex flex-col md:flex-row justify-between items-center">
+            <div class="mb-6 md:mb-0 flex items-center">
+              <span
+                class="h-4 w-4 bg-sporty-red rounded-full inline-block mr-3 live-dot"
+              ></span>
+              <span class="text-3xl font-bold text-white">LIVE</span>
             </div>
-            
-            <nav class="hidden md:flex gap-8">
-                <a href="#vision" class="font-display text-sm font-semibold uppercase tracking-wider text-silver hover:text-white transition-colors">01_VISION</a>
-                <a href="#system" class="font-display text-sm font-semibold uppercase tracking-wider text-silver hover:text-white transition-colors">02_SYSTEM</a>
-                <a href="#sports" class="font-display text-sm font-semibold uppercase tracking-wider text-silver hover:text-white transition-colors">03_SPORTS</a>
-                <a href="#access" class="font-display text-sm font-semibold uppercase tracking-wider text-silver hover:text-white transition-colors">04_ACCESS</a>
-            </nav>
-            
-            <div class="flex items-center gap-4">
-                <div class="hidden md:flex gap-3">
-                    <button @click="switchLanguage('en')" class="text-xs font-medium px-2 py-1 rounded" :class="{'bg-gold text-navy': language === 'en', 'text-silver hover:text-white': language !== 'en'}">EN</button>
-                    <button @click="switchLanguage('gu')" class="text-xs font-medium px-2 py-1 rounded" :class="{'bg-gold text-navy': language === 'gu', 'text-silver hover:text-white': language !== 'gu'}">ગુજરાતી</button>
+            <div
+              class="flex flex-col md:flex-row space-y-6 md:space-y-0 md:space-x-16"
+            >
+              <div class="text-center">
+                <p class="text-gray-400 text-lg">VIEWERS</p>
+                <div class="stats-counter" id="viewersCounter">1,730</div>
+              </div>
+              <div class="text-center">
+                <p class="text-gray-400 text-lg">EARNINGS</p>
+                <div class="stats-counter" id="earningsCounter">₹7,941</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-24 text-center">
+          <a href="#vision" class="inline-block animate-bounce">
+            <span class="block text-gray-400 text-sm mb-2"
+              >SCROLL TO EXPLORE</span
+            >
+            <i class="fas fa-angle-down text-sporty-red text-3xl"></i>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- THE PROBLEM & SOLUTION - DIAGONAL SECTION -->
+    <section id="vision" class="relative">
+      <!-- Blob backgrounds -->
+      <div class="blob bg-sporty-red w-96 h-96 top-20 -left-48"></div>
+      <div class="blob bg-sporty-red w-64 h-64 bottom-20 right-20"></div>
+
+      <!-- Content -->
+      <div class="container mx-auto px-4 py-20 relative z-10">
+        <div
+          class="flex flex-col md:flex-row items-center justify-between gap-12"
+        >
+          <!-- THE PROBLEM -->
+          <div class="w-full md:w-1/2 relative">
+            <div
+              class="absolute -left-4 -top-4 w-12 h-12 border-t-4 border-l-4 border-sporty-red"
+            ></div>
+            <h2 class="text-4xl md:text-6xl font-bold mb-6">
+              THE <span class="text-sporty-red">PROBLEM</span>
+            </h2>            
+            <p class="text-2xl mb-4">
+              85% of India's sports talent goes
+              <span class="text-sporty-red font-bold">undiscovered</span>.
+            </p>
+          </div>
+
+          <!-- THE SOLUTION -->
+          <div class="w-full md:w-1/2 relative">
+            <div
+              class="absolute -right-4 -top-4 w-12 h-12 border-t-4 border-r-4 border-sporty-red"
+            ></div>
+            <h2 class="text-4xl md:text-6xl font-bold mb-6">
+              THE <span class="text-sporty-red">SOLUTION</span>
+            </h2>            
+            <p class="text-2xl mb-4">
+              One-click web streaming. No app, no setup. Just
+              <span class="text-sporty-red font-bold">play</span>.
+            </p>
+          </div>
+        </div>
+
+        <!-- STATS ROW -->
+        <div class="mt-20 scroll-slider">
+          <div class="scroll-slider-inner">
+            <div
+              class="flex-shrink-0 w-72 mr-6 p-6 bg-sporty-black border-b-4 border-sporty-red transform transition duration-300 hover:-translate-y-2"
+            >
+              <div class="text-4xl md:text-5xl font-bold mb-2">
+                <span class="stats-counter">600M+</span>
+              </div>
+              <p class="text-gray-400">SPORTS FANS IN INDIA</p>
+            </div>
+            <div
+              class="flex-shrink-0 w-72 mr-6 p-6 bg-sporty-black border-b-4 border-sporty-red transform transition duration-300 hover:-translate-y-2"
+            >
+              <div class="text-4xl md:text-5xl font-bold mb-2">
+                <span class="stats-counter">₹85B</span>
+              </div>
+              <p class="text-gray-400">FANTASY SPORTS MARKET</p>
+            </div>
+            <div
+              class="flex-shrink-0 w-72 p-6 bg-sporty-black border-b-4 border-sporty-red transform transition duration-300 hover:-translate-y-2"
+            >
+              <div class="text-4xl md:text-5xl font-bold mb-2">
+                <span class="stats-counter">8.5M</span>
+              </div>
+              <p class="text-gray-400">ACTIVE STREAMING VIEWERS</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS - DIAGONAL SECTION -->
+    <section id="how" class="diagonal-section bg-sporty-red">
+      <div class="diagonal-content py-20">
+        <div class="container mx-auto px-4">
+          <div class="text-center mb-16">
+            <h2 class="text-4xl md:text-6xl font-bold mt-2 text-white">
+              HOW <span class="text-sporty-black">SPORTYFY</span> WORKS
+            </h2>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div
+              class="bg-white p-8 rounded-lg text-sporty-black transform transition duration-300 hover:scale-105 group"
+            >
+              <div class="flex items-start mb-6">
+                <svg
+                  class="w-16 h-16 text-sporty-red group-hover:scale-110 transition-transform"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M23 7l-7 5 7 5V7z"></path>
+                  <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+                </svg>
+              </div>
+              <h3 class="text-2xl font-bold mb-2">POSITION</h3>
+              <p class="text-sporty-black text-opacity-70">
+                Set up any camera to capture the action.
+              </p>
+            </div>
+
+            <div
+              class="bg-white p-8 rounded-lg text-sporty-black transform transition duration-300 hover:scale-105 group"
+            >
+              <div class="flex items-start mb-6">
+                <svg
+                  class="w-16 h-16 text-sporty-red group-hover:scale-110 transition-transform"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+              </div>
+              <h3 class="text-2xl font-bold mb-2">GO LIVE</h3>
+              <p class="text-sporty-black text-opacity-70">
+                One click to start broadcasting.
+              </p>
+            </div>
+
+            <div
+              class="bg-white p-8 rounded-lg text-sporty-black transform transition duration-300 hover:scale-105 group"
+            >
+              <div class="flex items-start mb-6">
+                <svg
+                  class="w-16 h-16 text-sporty-red group-hover:scale-110 transition-transform"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <line x1="12" y1="1" x2="12" y2="23"></line>
+                  <path
+                    d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"
+                  ></path>
+                </svg>
+              </div>
+              <h3 class="text-2xl font-bold mb-2">EARN</h3>
+              <p class="text-sporty-black text-opacity-70">
+                Receive direct UPI payments from fans.
+              </p>
+            </div>
+
+            <div
+              class="bg-white p-8 rounded-lg text-sporty-black transform transition duration-300 hover:scale-105 group"
+            >
+              <div class="flex items-start mb-6">
+                <svg
+                  class="w-16 h-16 text-sporty-red group-hover:scale-110 transition-transform"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polygon
+                    points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                  ></polygon>
+                </svg>
+              </div>
+              <h3 class="text-2xl font-bold mb-2">FAME</h3>
+              <p class="text-sporty-black text-opacity-70">
+                Get discovered by scouts and sponsors.
+              </p>
+            </div>
+          </div>
+
+          <!-- QUICK MONETIZATION FEATURES -->
+          <div
+            class="mt-16 flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 justify-between"
+          >
+            <div
+              class="flex items-center bg-white bg-opacity-20 p-4 rounded-md"
+            >
+              <svg
+                class="w-10 h-10 text-white mr-4 flex-shrink-0"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M12 2v20"></path>
+                <path
+                  d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"
+                ></path>
+              </svg>
+              <div>
+                <h5 class="font-bold text-lg text-white">DIRECT TIPS</h5>
+                <p class="text-white text-opacity-70 text-sm">
+                  Instant UPI payments during your streams
+                </p>
+              </div>
+            </div>
+            <div
+              class="flex items-center bg-white bg-opacity-20 p-4 rounded-md"
+            >
+              <svg
+                class="w-10 h-10 text-white mr-4 flex-shrink-0"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+              <div>
+                <h5 class="font-bold text-lg text-white">SUBSCRIBERS</h5>
+                <p class="text-white text-opacity-70 text-sm">
+                  Build a loyal fan base that pays monthly
+                </p>
+              </div>
+            </div>
+            <div
+              class="flex items-center bg-white bg-opacity-20 p-4 rounded-md"
+            >
+              <svg
+                class="w-10 h-10 text-white mr-4 flex-shrink-0"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"
+                ></path>
+              </svg>
+              <div>
+                <h5 class="font-bold text-lg text-white">SPONSORS</h5>
+                <p class="text-white text-opacity-70 text-sm">
+                  Connect with brands at all levels
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SPORTS SECTION - CLIPPATH -->
+    <section
+      id="sports"
+      class="py-28 relative clippath-top clippath-bottom bg-sporty-black"
+    >
+      <div class="container mx-auto px-4 relative z-10">
+        <div class="mb-16 text-center">
+          <svg
+            class="w-16 h-16 text-sporty-red mx-auto mb-4"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M12 6V2"></path>
+            <path d="M12 22v-4"></path>
+            <path d="M6 12H2"></path>
+            <path d="M22 12h-4"></path>
+            <path d="M16.24 7.76l2.83-2.83"></path>
+            <path d="M4.93 19.07l2.83-2.83"></path>
+            <path d="M19.07 19.07l-2.83-2.83"></path>
+            <path d="M4.93 4.93l2.83 2.83"></path>
+          </svg>
+          <h2 class="text-4xl md:text-6xl font-bold mt-2">
+            SUPPORTED <span class="text-sporty-red">SPORTS</span>
+          </h2>
+        </div>
+
+        <div class="sports-grid">
+          <div class="relative overflow-hidden rounded-lg group h-full">
+            <div
+              class="absolute inset-0 bg-gradient-to-t from-sporty-red to-transparent opacity-90 group-hover:opacity-100 transition duration-300"
+            ></div>
+            <img
+              src="/api/placeholder/400/800"
+              alt="Cricket placeholder"
+              class="w-full h-full object-cover"
+            />
+            <div class="absolute bottom-0 left-0 p-6">
+              <h3 class="text-3xl font-bold mb-2">CRICKET</h3>
+              <p class="text-white">From gully matches to pro leagues</p>
+            </div>
+          </div>
+          <div class="relative overflow-hidden rounded-lg group h-full">
+            <div
+              class="absolute inset-0 bg-gradient-to-t from-sporty-red to-transparent opacity-90 group-hover:opacity-100 transition duration-300"
+            ></div>
+            <img
+              src="/api/placeholder/600/400"
+              alt="Basketball placeholder"
+              class="w-full h-full object-cover"
+            />
+            <div class="absolute bottom-0 left-0 p-6">
+              <h3 class="text-3xl font-bold mb-2">BASKETBALL</h3>
+              <p class="text-white">Street courts to state tournaments</p>
+            </div>
+          </div>
+          <div class="relative overflow-hidden rounded-lg group h-full">
+            <div
+              class="absolute inset-0 bg-gradient-to-t from-sporty-red to-transparent opacity-90 group-hover:opacity-100 transition duration-300"
+            ></div>
+            <img
+              src="/api/placeholder/600/400"
+              alt="Pickle Ball placeholder"
+              class="w-full h-full object-cover"
+            />
+            <div class="absolute bottom-0 left-0 p-6">
+              <h3 class="text-3xl font-bold mb-2">PICKLE BALL</h3>
+              <p class="text-white">The fastest growing sport in India</p>
+            </div>
+          </div>
+          <div class="relative overflow-hidden rounded-lg group h-full">
+            <div
+              class="absolute inset-0 bg-gradient-to-t from-sporty-red to-transparent opacity-90 group-hover:opacity-100 transition duration-300"
+            ></div>
+            <img
+              src="/api/placeholder/400/800"
+              alt="Football placeholder"
+              class="w-full h-full object-cover"
+            />
+            <div class="absolute bottom-0 left-0 p-6">
+              <h3 class="text-3xl font-bold mb-2">FOOTBALL</h3>
+              <p class="text-white">School leagues to professional clubs</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-12 text-center">
+          <div class="inline-block relative">
+            <span class="text-2xl font-bold">Don't see your sport?</span>
+            <div class="h-1 w-full bg-sporty-red mt-1"></div>
+          </div>
+          <p class="text-xl mt-4">
+            If you can play it, you can stream it on
+            <span class="text-sporty-red font-bold">SPORTYFY.LIVE</span>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- INTERACTIVE QUIZ SECTION WITH STRIPE BG -->
+    <section id="waitlist" class="py-32 relative stripe-bg">
+      <div class="absolute inset-0 bg-black bg-opacity-80"></div>
+      <div class="container mx-auto px-4 relative z-10">
+        <div class="text-center mb-12">
+          <svg
+            class="w-16 h-16 text-sporty-red mx-auto mb-4"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path
+              d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+            ></path>
+          </svg>
+          <h2 class="text-5xl md:text-7xl font-bold mb-4">
+            JOIN THE <span class="text-sporty-red">REVOLUTION</span>
+          </h2>
+          <p class="text-xl max-w-2xl mx-auto">
+            Limited spots for our Ahmedabad beta launch. Take the quiz to
+            discover your streamer style and get priority access.
+          </p>
+        </div>
+
+        <div
+          class="max-w-4xl mx-auto bg-black bg-opacity-90 rounded-lg p-8 relative overflow-hidden border-2 border-sporty-red"
+        >
+          <div
+            class="absolute -right-20 -top-20 w-40 h-40 bg-sporty-red opacity-10 rounded-full"
+          ></div>
+          <div
+            class="absolute -left-20 -bottom-20 w-40 h-40 bg-sporty-red opacity-10 rounded-full"
+          ></div>
+
+          <!-- THE GAME/QUIZ -->
+          <div id="interactive-game" class="text-center">
+            <h3 class="text-3xl font-bold mb-6">
+              WHAT'S YOUR <span class="text-sporty-red">SPORTYFY</span> STYLE?
+            </h3>
+
+            <div id="quiz-container">
+              <!-- STEP 1 -->
+              <div class="quiz-step active" data-step="1">
+                <h4 class="text-2xl font-bold mb-6">Pick your sport</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <button
+                    class="quiz-option bg-sporty-black p-6 rounded-lg border-2 border-transparent hover:border-sporty-red transition text-left"
+                  >
+                    <svg
+                      class="w-10 h-10 text-sporty-red mb-2"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <path d="M12 6V2"></path>
+                      <path d="M12 22v-4"></path>
+                      <path d="M6 12H2"></path>
+                      <path d="M22 12h-4"></path>
+                    </svg>
+                    <h5 class="text-xl font-bold">Cricket</h5>
+                  </button>
+                  <button
+                    class="quiz-option bg-sporty-black p-6 rounded-lg border-2 border-transparent hover:border-sporty-red transition text-left"
+                  >
+                    <svg
+                      class="w-10 h-10 text-sporty-red mb-2"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <circle cx="12" cy="12" r="10"></circle>
+                    </svg>
+                    <h5 class="text-xl font-bold">Basketball</h5>
+                  </button>
+                  <button
+                    class="quiz-option bg-sporty-black p-6 rounded-lg border-2 border-transparent hover:border-sporty-red transition text-left"
+                  >
+                    <svg
+                      class="w-10 h-10 text-sporty-red mb-2"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+                      <path d="M2 12h20"></path>
+                      <path d="M12 4v16"></path>
+                    </svg>
+                    <h5 class="text-xl font-bold">Pickle Ball</h5>
+                  </button>
+                  <button
+                    class="quiz-option bg-sporty-black p-6 rounded-lg border-2 border-transparent hover:border-sporty-red transition text-left"
+                  >
+                    <svg
+                      class="w-10 h-10 text-sporty-red mb-2"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <path d="M2 12h20"></path>
+                      <path d="M12 2v20"></path>
+                    </svg>
+                    <h5 class="text-xl font-bold">Football</h5>
+                  </button>
                 </div>
-                
-                <button @click="toggleMobileMenu" class="md:hidden flex flex-col gap-1.5">
-                    <span class="w-7 h-0.5 bg-white block"></span>
-                    <span class="w-7 h-0.5 bg-white block"></span>
-                    <span class="w-7 h-0.5 bg-white block"></span>
+              </div>
+
+              <!-- STEP 2 -->
+              <div class="quiz-step hidden" data-step="2">
+                <h4 class="text-2xl font-bold mb-6">Your streaming goal?</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <button
+                    class="quiz-option bg-sporty-black p-6 rounded-lg border-2 border-transparent hover:border-sporty-red transition text-left"
+                  >
+                    <svg
+                      class="w-10 h-10 text-sporty-red mb-2"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <line x1="12" y1="1" x2="12" y2="23"></line>
+                      <path
+                        d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"
+                      ></path>
+                    </svg>
+                    <h5 class="text-xl font-bold">Make Money</h5>
+                  </button>
+                  <button
+                    class="quiz-option bg-sporty-black p-6 rounded-lg border-2 border-transparent hover:border-sporty-red transition text-left"
+                  >
+                    <svg
+                      class="w-10 h-10 text-sporty-red mb-2"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"
+                      ></path>
+                      <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                    <h5 class="text-xl font-bold">Get Discovered</h5>
+                  </button>
+                  <button
+                    class="quiz-option bg-sporty-black p-6 rounded-lg border-2 border-transparent hover:border-sporty-red transition text-left"
+                  >
+                    <svg
+                      class="w-10 h-10 text-sporty-red mb-2"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"
+                      ></path>
+                      <circle cx="9" cy="7" r="4"></circle>
+                      <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                      <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                    <h5 class="text-xl font-bold">Build Community</h5>
+                  </button>
+                  <button
+                    class="quiz-option bg-sporty-black p-6 rounded-lg border-2 border-transparent hover:border-sporty-red transition text-left"
+                  >
+                    <svg
+                      class="w-10 h-10 text-sporty-red mb-2"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <polyline
+                        points="22 12 18 12 15 21 9 3 6 12 2 12"
+                      ></polyline>
+                    </svg>
+                    <h5 class="text-xl font-bold">Track Progress</h5>
+                  </button>
+                </div>
+              </div>
+
+              <!-- STEP 3 -->
+              <div class="quiz-step hidden" data-step="3">
+                <h4 class="text-2xl font-bold mb-6">Where are you based?</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <button
+                    class="quiz-option bg-sporty-black p-6 rounded-lg border-2 border-transparent hover:border-sporty-red transition text-left"
+                  >
+                    <svg
+                      class="w-10 h-10 text-sporty-red mb-2"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"
+                      ></path>
+                      <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                    <h5 class="text-xl font-bold">Ahmedabad</h5>
+                  </button>
+                  <button
+                    class="quiz-option bg-sporty-black p-6 rounded-lg border-2 border-transparent hover:border-sporty-red transition text-left"
+                  >
+                    <svg
+                      class="w-10 h-10 text-sporty-red mb-2"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"
+                      ></path>
+                      <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                    <h5 class="text-xl font-bold">Gujarat</h5>
+                  </button>
+                  <button
+                    class="quiz-option bg-sporty-black p-6 rounded-lg border-2 border-transparent hover:border-sporty-red transition text-left"
+                  >
+                    <svg
+                      class="w-10 h-10 text-sporty-red mb-2"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"
+                      ></path>
+                      <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                    <h5 class="text-xl font-bold">Major Metro</h5>
+                  </button>
+                  <button
+                    class="quiz-option bg-sporty-black p-6 rounded-lg border-2 border-transparent hover:border-sporty-red transition text-left"
+                  >
+                    <svg
+                      class="w-10 h-10 text-sporty-red mb-2"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"
+                      ></path>
+                      <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                    <h5 class="text-xl font-bold">Other City</h5>
+                  </button>
+                </div>
+              </div>
+
+              <!-- FINAL STEP - RESULTS AND FORM -->
+              <div class="quiz-step hidden" data-step="4">
+                <div class="text-center mb-8">
+                  <svg
+                    class="w-20 h-20 text-sporty-red mx-auto mb-4"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <polygon
+                      points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                    ></polygon>
+                  </svg>
+                  <h4 class="text-2xl font-bold mb-2">
+                    YOU'RE A
+                    <span id="player-type" class="text-sporty-red"
+                      >RISING STAR</span
+                    >!
+                  </h4>
+                  <p class="text-lg text-gray-300 mb-6" id="player-description">
+                    You're ready to showcase your skills and build your brand.
+                    SPORTYFY.LIVE is perfect for athletes like you who want to
+                    be seen and recognized!
+                  </p>
+                </div>
+
+                <!-- The actual form -->
+                <form
+                  id="waitlist-form"
+                  class="grid grid-cols-1 md:grid-cols-2 gap-6"
+                >
+                  <div class="md:col-span-2">
+                    <input
+                      type="text"
+                      class="w-full bg-sporty-black border-2 border-gray-700 rounded p-3 text-white focus:border-sporty-red focus:outline-none"
+                      placeholder="YOUR FULL NAME"
+                    />
+                  </div>
+                  <div>
+                    <input
+                      type="email"
+                      class="w-full bg-sporty-black border-2 border-gray-700 rounded p-3 text-white focus:border-sporty-red focus:outline-none"
+                      placeholder="YOUR EMAIL"
+                    />
+                  </div>
+                  <div>
+                    <input
+                      type="tel"
+                      class="w-full bg-sporty-black border-2 border-gray-700 rounded p-3 text-white focus:border-sporty-red focus:outline-none"
+                      placeholder="YOUR MOBILE (FOR UPI)"
+                    />
+                  </div>
+                  <div class="md:col-span-2">
+                    <button
+                      type="submit"
+                      class="w-full bg-sporty-red hover:bg-white hover:text-sporty-red text-white font-bold text-xl py-4 rounded transition duration-300 mt-4 flex items-center justify-center"
+                    >
+                      <span>CLAIM YOUR SPOT</span>
+                      <i class="fas fa-bolt ml-2"></i>
+                    </button>
+                  </div>
+                </form>
+              </div>
+
+              <!-- Navigation buttons -->
+              <div class="mt-8 flex justify-between items-center quiz-nav">
+                <button
+                  id="prev-btn"
+                  class="bg-transparent border-2 border-gray-600 text-white px-6 py-2 rounded hover:border-white transition hidden"
+                >
+                  <i class="fas fa-arrow-left mr-2"></i> Back
                 </button>
-            </div>
-        </header>
-        
-        <div v-if="mobileMenuOpen" class="fixed inset-0 bg-navy z-40 pt-24 px-8">
-            <nav class="flex flex-col gap-8">
-                <a @click="closeMobileMenu" href="#vision" class="font-display text-xl font-semibold uppercase tracking-wider text-silver hover:text-white transition-colors">01_VISION</a>
-                <a @click="closeMobileMenu" href="#system" class="font-display text-xl font-semibold uppercase tracking-wider text-silver hover:text-white transition-colors">02_SYSTEM</a>
-                <a @click="closeMobileMenu" href="#sports" class="font-display text-xl font-semibold uppercase tracking-wider text-silver hover:text-white transition-colors">03_SPORTS</a>
-                <a @click="closeMobileMenu" href="#access" class="font-display text-xl font-semibold uppercase tracking-wider text-silver hover:text-white transition-colors">04_ACCESS</a>
-                
-                <div class="flex gap-3 mt-4">
-                    <button @click="switchLanguage('en')" class="text-sm font-medium px-3 py-1.5 rounded" :class="{'bg-gold text-navy': language === 'en', 'text-silver border border-silver': language !== 'en'}">English</button>
-                    <button @click="switchLanguage('gu')" class="text-sm font-medium px-3 py-1.5 rounded" :class="{'bg-gold text-navy': language === 'gu', 'text-silver border border-silver': language !== 'gu'}">ગુજરાતી</button>
+                <div class="quiz-progress mx-auto">
+                  <span
+                    class="inline-block w-3 h-3 rounded-full bg-sporty-red mx-1"
+                  ></span>
+                  <span
+                    class="inline-block w-3 h-3 rounded-full bg-gray-600 mx-1"
+                  ></span>
+                  <span
+                    class="inline-block w-3 h-3 rounded-full bg-gray-600 mx-1"
+                  ></span>
+                  <span
+                    class="inline-block w-3 h-3 rounded-full bg-gray-600 mx-1"
+                  ></span>
                 </div>
-            </nav>
+                <button
+                  id="next-btn"
+                  class="bg-sporty-red text-white px-6 py-2 rounded hover:bg-white hover:text-sporty-red transition"
+                >
+                  Next <i class="fas fa-arrow-right ml-2"></i>
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <main>
-            <!-- Hero Section -->
-            <section class="min-h-screen flex flex-col relative pt-28 pb-12 px-6 overflow-hidden">
-                <div class="container mx-auto flex-1 flex flex-col lg:flex-row items-center gap-12 z-10">
-                    <div class="lg:w-1/2">
-                        <div class="inline-block bg-crimson/20 text-crimson px-4 py-2 rounded-full text-xs font-semibold tracking-wider mb-6 border border-crimson/20">
-                            {{ language === 'en' ? 'LAUNCHING JULY 2025' : 'જુલાઈ 2025 માં લોન્ચ થઈ રહ્યું છે' }}
-                        </div>
-                        
-                        <h1 class="font-display text-4xl md:text-6xl font-bold mb-8 leading-tight">
-                            <span class="block" v-if="language === 'en'">BROADCAST</span>
-                            <span class="block" v-if="language === 'en'">YOUR GAME.</span>
-                            <span class="block text-crimson" v-if="language === 'en'">CLAIM YOUR FAME.</span>
-                            
-                            <span class="block" v-if="language === 'gu'">તમારી રમત</span>
-                            <span class="block" v-if="language === 'gu'">પ્રસારિત કરો.</span>
-                            <span class="block text-crimson" v-if="language === 'gu'">તમારી પ્રસિદ્ધિ મેળવો.</span>
-                        </h1>
-                        
-                        <p class="text-xl mb-10 text-silver max-w-xl">
-                            {{ language === 'en' ? 'India\'s first web-based sports streaming platform. No app needed - just point, stream, and get discovered.' : 'ભારતનું પ્રથમ વેબ આધારિત સ્પોર્ટ્સ સ્ટ્રીમિંગ પ્લેટફોર્મ. કોઈ એપની જરૂર નથી - ફક્ત કેમેરા તાકો, સ્ટ્રીમ કરો, અને પ્રસિદ્ધ થાઓ.' }}
-                        </p>
-                        
-                        <div class="flex flex-wrap gap-4">
-                            <a href="#access" class="bg-crimson text-white px-8 py-3 rounded font-display font-bold tracking-wider uppercase text-sm inline-flex items-center gap-2 transform hover:-translate-y-1 transition-all pulse-btn">
-                                <span>{{ language === 'en' ? 'JOIN WAITLIST' : 'વેઇટલિસ્ટમાં જોડાઓ' }}</span>
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                                </svg>
-                            </a>
-                            
-                            <a href="#system" class="bg-transparent border border-silver text-white px-8 py-3 rounded font-display font-bold tracking-wider uppercase text-sm inline-flex items-center gap-2 hover:border-white transition-all">
-                                <span>{{ language === 'en' ? 'HOW IT WORKS' : 'કેવી રીતે કામ કરે છે' }}</span>
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                                </svg>
-                            </a>
-                        </div>
-                    </div>
-                    
-                    <div class="lg:w-1/2 relative">
-                        <div class="absolute top-4 left-4 bg-crimson text-white px-3 py-1.5 rounded flex items-center gap-2 text-sm font-medium z-10">
-                            <span class="w-2 h-2 bg-white rounded-full live-dot"></span>
-                            <span>LIVE</span>
-                        </div>
-                        
-                        <div class="rounded-lg overflow-hidden shadow-2xl relative">
-                            <video loop="true" autoplay="autoplay" muted width="100%" class="w-full">
-                                <source src="./videos/cricket-night.mp4" type="video/mp4" />
-                              </video>
-                            
-                            <div class="absolute inset-0">
-                                <div class="data-scanner"></div>
-                            </div>
-                            
-                            <div class="absolute bottom-4 right-4 bg-navy/85 backdrop-blur-sm border border-white/10 px-4 py-2 rounded">
-                                <div class="text-xs text-silver">VIEWERS</div>
-                                <div class="font-display text-2xl font-bold">{{ viewerCount }}</div>
-                            </div>
-                            
-                            <div class="absolute top-4 right-4 bg-navy/85 backdrop-blur-sm border border-white/10 px-4 py-2 rounded">
-                                <div class="text-xs text-silver">EARNINGS</div>
-                                <div class="font-display text-xl font-bold flex items-center">
-                                    <span class="text-gold">₹</span>
-                                    <span>{{ earnings }}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center gap-2">
-                    <div class="text-xs text-silver uppercase tracking-wider">{{ language === 'en' ? 'SCROLL TO EXPLORE' : 'જાણવા માટે સ્ક્રોલ કરો' }}</div>
-                    <div class="w-6 h-9 border border-silver/50 rounded-full flex items-start justify-center p-2">
-                        <div class="w-1 h-1.5 bg-silver rounded-full animate-bounce"></div>
-                    </div>
-                </div>
-            </section>
+        <div
+          class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-6 mt-16 justify-center"
+        >
+          <div
+            class="bg-black p-4 rounded-lg border-t-4 border-sporty-red text-center"
+          >
+            <h4 class="font-bold mb-1">NOW</h4>
+            <p class="text-2xl font-bold text-sporty-red">WAITLIST</p>
+          </div>
+          <div
+            class="bg-black p-4 rounded-lg border-t-4 border-sporty-red text-center"
+          >
+            <h4 class="font-bold mb-1">Q2 2025</h4>
+            <p class="text-2xl font-bold text-sporty-red">AHMEDABAD BETA</p>
+          </div>
+          <div
+            class="bg-black p-4 rounded-lg border-t-4 border-sporty-red text-center"
+          >
+            <h4 class="font-bold mb-1">JULY 2025</h4>
+            <p class="text-2xl font-bold text-sporty-red">INDIA ROLLOUT</p>
+          </div>
+        </div>
+      </div>
+    </section>
 
-            <!-- Vision Section -->
-            <section id="vision" class="py-20 bg-navy/60 relative">
-                <div class="container mx-auto px-6">
-                    <div class="text-center mb-16">
-                        <div class="inline-block font-display text-sm uppercase tracking-wider text-silver mb-3">01_VISION</div>
-                        <h2 class="font-display text-3xl md:text-5xl font-bold">
-                            {{ language === 'en' ? 'UNLOCKING SPORTS ' : 'ભારતીય રમતોને ' }}
-                            <span class="text-crimson">{{ language === 'en' ? 'POTENTIAL' : 'ખોલવી' }}</span>
-                        </h2>
-                    </div>
-                    
-                    <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-                        <div class="bg-navy/40 backdrop-blur-sm border border-white/5 p-6 rounded-lg hover:transform hover:-translate-y-2 transition-all hover:shadow-xl">
-                            <div class="font-display text-4xl font-bold text-crimson opacity-80 mb-4">01</div>
-                            <h3 class="font-display text-xl font-bold mb-4 uppercase">{{ language === 'en' ? 'THE PROBLEM' : 'સમસ્યા' }}</h3>
-                            <p class="text-silver">{{ language === 'en' ? 'Countless talented athletes remain invisible. 85% of India\'s sports talent goes undiscovered.' : 'અસંખ્ય પ્રતિભાશાળી ખેલાડીઓ અદૃશ્ય રહે છે. ભારતની 85% રમત પ્રતિભા અનડિસ્કવર્ડ રહે છે.' }}</p>
-                        </div>
-                        
-                        <div class="bg-navy/40 backdrop-blur-sm border border-white/5 p-6 rounded-lg hover:transform hover:-translate-y-2 transition-all hover:shadow-xl">
-                            <div class="font-display text-4xl font-bold text-crimson opacity-80 mb-4">02</div>
-                            <h3 class="font-display text-xl font-bold mb-4 uppercase">{{ language === 'en' ? 'THE SOLUTION' : 'સમાધાન' }}</h3>
-                            <p class="text-silver">{{ language === 'en' ? 'One-click web streaming platform. Broadcast any game, anywhere. No app downloads, no complex setup.' : 'એક-ક્લિક વેબ સ્ટ્રીમિંગ પ્લેટફોર્મ. કોઈપણ ગેમ, ક્યાંય પણ પ્રસારિત કરો. કોઈ એપ ડાઉનલોડ નહીં, કોઈ જટિલ સેટઅપ નહીં.' }}</p>
-                        </div>
-                        
-                        <div class="bg-navy/40 backdrop-blur-sm border border-white/5 p-6 rounded-lg hover:transform hover:-translate-y-2 transition-all hover:shadow-xl">
-                            <div class="font-display text-4xl font-bold text-crimson opacity-80 mb-4">03</div>
-                            <h3 class="font-display text-xl font-bold mb-4 uppercase">{{ language === 'en' ? 'THE FUTURE' : 'ભવિષ્ય' }}</h3>
-                            <p class="text-silver">{{ language === 'en' ? 'A new sports ecosystem where talent—not privilege—determines success. Indians dominating global sports.' : 'એક નવી રમત ઇકોસિસ્ટમ જ્યાં પ્રતિભા—વિશેષાધિકાર નહીં—સફળતા નક્કી કરે છે. ભારતીયો વૈશ્વિક રમતોમાં પ્રભુત્વ મેળવે છે.' }}</p>
-                        </div>
-                    </div>
-                    
-                    <div class="mt-20 grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-                        <div class="text-center">
-                            <div class="font-display text-5xl font-bold text-gold mb-2">600M+</div>
-                            <div class="text-sm uppercase text-silver tracking-wider">{{ language === 'en' ? 'SPORTS FANS IN INDIA' : 'ભારતમાં રમત ચાહકો' }}</div>
-                        </div>
-                        
-                        <div class="text-center">
-                            <div class="font-display text-5xl font-bold text-gold mb-2">₹85B</div>
-                            <div class="text-sm uppercase text-silver tracking-wider">{{ language === 'en' ? 'FANTASY SPORTS MARKET' : 'ફેન્ટસી સ્પોર્ટ્સ માર્કેટ' }}</div>
-                        </div>
-                        
-                        <div class="text-center">
-                            <div class="font-display text-5xl font-bold text-gold mb-2">8.5M</div>
-                            <div class="text-sm uppercase text-silver tracking-wider">{{ language === 'en' ? 'ACTIVE STREAMING VIEWERS' : 'સક્રિય સ્ટ્રીમિંગ દર્શકો' }}</div>
-                        </div>
-                    </div>
-                </div>
-            </section>
+    <!-- FOOTER WITH ANGLED TOP -->
+    <footer class="bg-black py-12 border-t-2 border-sporty-red">
+      <div class="container mx-auto px-4">
+        <div
+          class="flex flex-col md:flex-row justify-between items-center mb-12"
+        >
+          <h2 class="text-4xl font-bold mb-6 md:mb-0">
+            <span class="glitch-text" data-text="SPORTYFY">SPORTYFY</span>
+            <span class="text-sporty-red">.LIVE</span>
+          </h2>
+          <p class="text-xl font-bold">BROADCAST YOUR GAME. CLAIM YOUR FAME.</p>
+        </div>
 
-            <!-- System Section -->
-            <section id="system" class="py-20 bg-navy/80 relative">
-                <div class="container mx-auto px-6">
-                    <div class="text-center mb-16">
-                        <div class="inline-block font-display text-sm uppercase tracking-wider text-silver mb-3">02_SYSTEM</div>
-                        <h2 class="font-display text-3xl md:text-5xl font-bold">
-                            {{ language === 'en' ? 'HOW ' : 'કેવી રીતે ' }}
-                            <span class="text-crimson">{{ language === 'en' ? 'SPORTYFY WORKS' : 'SPORTYFY કામ કરે છે' }}</span>
-                        </h2>
-                    </div>
-                    
-                    <div class="grid md:grid-cols-4 gap-8 max-w-5xl mx-auto mb-16">
-                        <div class="text-center">
-                            <div class="w-16 h-16 bg-crimson/20 rounded-full flex items-center justify-center text-2xl font-bold font-display text-crimson mx-auto mb-6">01</div>
-                            <h3 class="font-display text-xl font-bold mb-3">{{ language === 'en' ? 'POSITION CAMERA' : 'કેમેરા સેટ કરો' }}</h3>
-                            <p class="text-silver text-sm">{{ language === 'en' ? 'Set up your phone or any camera device to capture the action.' : 'ક્રિયા કેપ્ચર કરવા માટે તમારા ફોન અથવા કોઈપણ કેમેરા ડિવાઇસ સેટ કરો.' }}</p>
-                        </div>
-                        
-                        <div class="text-center">
-                            <div class="w-16 h-16 bg-crimson/20 rounded-full flex items-center justify-center text-2xl font-bold font-display text-crimson mx-auto mb-6">02</div>
-                            <h3 class="font-display text-xl font-bold mb-3">{{ language === 'en' ? 'GO LIVE' : 'લાઈવ જાઓ' }}</h3>
-                            <p class="text-silver text-sm">{{ language === 'en' ? 'One click to start broadcasting. No downloads or complex setup required.' : 'પ્રસારણ શરૂ કરવા માટે એક ક્લિક. કોઈ ડાઉનલોડ અથવા જટિલ સેટઅપની જરૂર નથી.' }}</p>
-                        </div>
-                        
-                        <div class="text-center">
-                            <div class="w-16 h-16 bg-crimson/20 rounded-full flex items-center justify-center text-2xl font-bold font-display text-crimson mx-auto mb-6">03</div>
-                            <h3 class="font-display text-xl font-bold mb-3">{{ language === 'en' ? 'EARN MONEY' : 'પૈસા કમાઓ' }}</h3>
-                            <p class="text-silver text-sm">{{ language === 'en' ? 'Receive tips, brand sponsorships, and UPI payments directly from fans.' : 'ચાહકો પાસેથી સીધા ટિપ્સ, બ્રાન્ડ સ્પોન્સરશિપ અને UPI પેમેન્ટ્સ મેળવો.' }}</p>
-                        </div>
-                        
-                        <div class="text-center">
-                            <div class="w-16 h-16 bg-crimson/20 rounded-full flex items-center justify-center text-2xl font-bold font-display text-crimson mx-auto mb-6">04</div>
-                            <h3 class="font-display text-xl font-bold mb-3">{{ language === 'en' ? 'GET DISCOVERED' : 'ઓળખાઓ' }}</h3>
-                            <p class="text-silver text-sm">{{ language === 'en' ? 'Attract scouts, sponsors, and build your personal brand and following.' : 'સ્કાઉટ્સ, સ્પોન્સર્સને આકર્ષિત કરો અને તમારો વ્યક્તિગત બ્રાન્ડ અને અનુયાયીઓ બનાવો.' }}</p>
-                        </div>
-                    </div>
-                    
-                    <div class="grid md:grid-cols-2 gap-12 max-w-5xl mx-auto">
-                        <div class="relative">
-                            <img src="/api/placeholder/600/400" alt="Platform interface" class="rounded-lg shadow-2xl">
-                            <div class="absolute inset-0 bg-gradient-to-r from-crimson/30 to-navy/30 mix-blend-overlay rounded-lg"></div>
-                        </div>
-                        
-                        <div>
-                            <h3 class="font-display text-2xl font-bold mb-6">{{ language === 'en' ? 'DESIGNED FOR ATHLETES, BUILT FOR VICTORY' : 'ખેલાડીઓ માટે ડિઝાઇન કરેલ, વિજય માટે બનાવેલ' }}</h3>
-                            <ul class="space-y-6">
-                                <li class="flex gap-4">
-                                    <div class="w-8 h-8 rounded-full bg-gold/20 flex items-center justify-center flex-shrink-0 mt-1">
-                                        <svg class="w-4 h-4 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <div class="font-bold">{{ language === 'en' ? 'DIRECT MONETIZATION' : 'સીધું મોનેટાઇઝેશન' }}</div>
-                                        <p class="text-silver text-sm">{{ language === 'en' ? 'Fans can support you with UPI payments during live streams. No middlemen, no delays.' : 'લાઇવ સ્ટ્રીમ્સ દરમિયાન ચાહકો તમને UPI ચુકવણીઓ સાથે સમર્થન આપી શકે છે. કોઈ મધ્યસ્થીઓ નહીં, કોઈ વિલંબ નહીં.' }}</p>
-                                    </div>
-                                </li>
-                                
-                                <li class="flex gap-4">
-                                    <div class="w-8 h-8 rounded-full bg-gold/20 flex items-center justify-center flex-shrink-0 mt-1">
-                                        <svg class="w-4 h-4 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <div class="font-bold">{{ language === 'en' ? 'FANTASY SPORTS INTEGRATION' : 'ફેન્ટસી સ્પોર્ટ્સ ઇન્ટિગ્રેશન' }}</div>
-                                        <p class="text-silver text-sm">{{ language === 'en' ? 'Connect your streams with fantasy sports platforms. Fans can create fantasy teams based on your real-life performance.' : 'તમારી સ્ટ્રીમ્સને ફેન્ટસી સ્પોર્ટ્સ પ્લેટફોર્મ સાથે જોડો. ચાહકો તમારી વાસ્તવિક જીવન ક્ષમતા પર આધારિત ફેન્ટસી ટીમો બનાવી શકે છે.' }}</p>
-                                    </div>
-                                </li>
-                                
-                                <li class="flex gap-4">
-                                    <div class="w-8 h-8 rounded-full bg-gold/20 flex items-center justify-center flex-shrink-0 mt-1">
-                                        <svg class="w-4 h-4 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <div class="font-bold">{{ language === 'en' ? 'AHMEDABAD BETA FOCUS' : 'અમદાવાદ બીટા ફોકસ' }}</div>
-                                        <p class="text-silver text-sm">{{ language === 'en' ? 'We\'re launching first in Ahmedabad with dedicated servers and local support. Gujarati sports first.' : 'અમે સમર્પિત સર્વર્સ અને સ્થાનિક સપોર્ટ સાથે અમદાવાદમાં પ્રથમ લોન્ચ કરી રહ્યા છીએ. ગુજરાતી રમતો પ્રથમ.' }}</p>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <div class="mt-16 grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-                        <div class="bg-navy/40 backdrop-blur-sm border border-white/5 p-6 rounded-lg hover:transform hover:-translate-y-2 transition-all hover:shadow-xl">
-                            <div class="w-12 h-12 bg-gold/20 rounded-full flex items-center justify-center mb-4">
-                                <svg class="w-6 h-6 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
-                            </div>
-                            <h3 class="font-display text-xl font-bold mb-3">{{ language === 'en' ? 'DIRECT TIPS' : 'ડાયરેક્ટ ટિપ્સ' }}</h3>
-                            <p class="text-silver text-sm">{{ language === 'en' ? 'Viewers can send you direct tips through UPI during your broadcasts. Money goes straight to your account.' : 'દર્શકો તમારા પ્રસારણો દરમિયાન UPI દ્વારા તમને સીધી ટિપ્સ મોકલી શકે છે. પૈસા સીધા તમારા ખાતામાં જાય છે.' }}</p>
-                        </div>
-                        
-                        <div class="bg-navy/40 backdrop-blur-sm border border-white/5 p-6 rounded-lg hover:transform hover:-translate-y-2 transition-all hover:shadow-xl">
-                            <div class="w-12 h-12 bg-gold/20 rounded-full flex items-center justify-center mb-4">
-                                <svg class="w-6 h-6 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
-                            </div>
-                            <h3 class="font-display text-xl font-bold mb-3">{{ language === 'en' ? 'SUBSCRIPTIONS' : 'સબ્સક્રિપ્શન્સ' }}</h3>
-                            <p class="text-silver text-sm">{{ language === 'en' ? 'Fans pay monthly to support you and get special perks like exclusive content and badges.' : 'ચાહકો તમને સપોર્ટ કરવા માટે માસિક ચૂકવણી કરે છે અને એક્સક્લુઝિવ કન્ટેન્ટ અને બેજ જેવા સ્પેશિયલ પર્ક્સ મેળવે છે.' }}</p>
-                        </div>
-                        
-                        <div class="bg-navy/40 backdrop-blur-sm border border-white/5 p-6 rounded-lg hover:transform hover:-translate-y-2 transition-all hover:shadow-xl">
-                            <div class="w-12 h-12 bg-gold/20 rounded-full flex items-center justify-center mb-4">
-                                <svg class="w-6 h-6 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"></path>
-                                </svg>
-                            </div>
-                            <h3 class="font-display text-xl font-bold mb-3">{{ language === 'en' ? 'BRAND SPONSORSHIPS' : 'બ્રાન્ડ સ્પોન્સરશિપ્સ' }}</h3>
-                            <p class="text-silver text-sm">{{ language === 'en' ? 'Connect with brands looking to sponsor athletes at all levels, from neighborhood stars to professionals.' : 'નેઇબરહુડ સ્ટાર્સથી લઈને પ્રોફેશનલ્સ સુધી, તમામ સ્તરે ખેલાડીઓને સ્પોન્સર કરવા માંગતી બ્રાન્ડ્સ સાથે કનેક્ટ કરો.' }}</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Sports Section -->
-            <section id="sports" class="py-20 bg-navy/60 relative">
-                <div class="container mx-auto px-6">
-                    <div class="text-center mb-16">
-                        <div class="inline-block font-display text-sm uppercase tracking-wider text-silver mb-3">03_SPORTS</div>
-                        <h2 class="font-display text-3xl md:text-5xl font-bold">
-                            {{ language === 'en' ? 'SUPPORTED ' : 'સમર્થિત ' }}
-                            <span class="text-crimson">{{ language === 'en' ? 'SPORTS' : 'રમતો' }}</span>
-                        </h2>
-                    </div>
-                    
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-5xl mx-auto">
-                        <div class="group relative overflow-hidden rounded-lg aspect-square">
-                            <img src="/api/placeholder/400/400" alt="Cricket" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-                            <div class="absolute inset-0 bg-gradient-to-t from-navy/90 to-transparent"></div>
-                            <div class="absolute bottom-0 left-0 w-full p-4">
-                                <div class="font-display text-2xl font-bold">{{ language === 'en' ? 'CRICKET' : 'ક્રિકેટ' }}</div>
-                                <div class="text-silver text-sm">{{ language === 'en' ? 'From gully matches to pro leagues' : 'ગલી મેચથી લઈને પ્રો લીગ સુધી' }}</div>
-                            </div>
-                        </div>
-                        
-                        <div class="group relative overflow-hidden rounded-lg aspect-square">
-                            <img src="/api/placeholder/400/400" alt="Basketball" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-                            <div class="absolute inset-0 bg-gradient-to-t from-navy/90 to-transparent"></div>
-                            <div class="absolute bottom-0 left-0 w-full p-4">
-                                <div class="font-display text-2xl font-bold">{{ language === 'en' ? 'BASKETBALL' : 'બાસ્કેટબોલ' }}</div>
-                                <div class="text-silver text-sm">{{ language === 'en' ? 'Street courts to state tournaments' : 'સ્ટ્રીટ કોર્ટથી સ્ટેટ ટૂર્નામેન્ટ્સ સુધી' }}</div>
-                            </div>
-                        </div>
-                        
-                        <div class="group relative overflow-hidden rounded-lg aspect-square">
-                            <img src="/api/placeholder/400/400" alt="Pickle Ball" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-                            <div class="absolute inset-0 bg-gradient-to-t from-navy/90 to-transparent"></div>
-                            <div class="absolute bottom-0 left-0 w-full p-4">
-                                <div class="font-display text-2xl font-bold">{{ language === 'en' ? 'PICKLE BALL' : 'પિકલ બોલ' }}</div>
-                                <div class="text-silver text-sm">{{ language === 'en' ? 'The fastest growing sport in India' : 'ભારતમાં સૌથી ઝડપથી વિકસતી રમત' }}</div>
-                            </div>
-                        </div>
-                        
-                        <div class="group relative overflow-hidden rounded-lg aspect-square">
-                            <img src="/api/placeholder/400/400" alt="Football" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-                            <div class="absolute inset-0 bg-gradient-to-t from-navy/90 to-transparent"></div>
-                            <div class="absolute bottom-0 left-0 w-full p-4">
-                                <div class="font-display text-2xl font-bold">{{ language === 'en' ? 'FOOTBALL' : 'ફૂટબોલ' }}</div>
-                                <div class="text-silver text-sm">{{ language === 'en' ? 'School leagues to professional clubs' : 'સ્કૂલ લીગથી પ્રોફેશનલ ક્લબ્સ સુધી' }}</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="flex items-center gap-4 justify-center mt-12 max-w-3xl mx-auto text-center p-4 bg-navy/40 backdrop-blur-sm border border-crimson/10 rounded-lg">
-                        <svg class="w-6 h-6 text-crimson flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                        <p class="text-silver">{{ language === 'en' ? 'Don\'t see your sport? We support ALL sports! If you can play it, you can stream it on SPORTYFY.LIVE.' : 'તમારી રમત જોતા નથી? અમે બધી રમતોને સપોર્ટ કરીએ છીએ! જો તમે રમી શકો છો, તો તમે તેને SPORTYFY.LIVE પર સ્ટ્રીમ કરી શકો છો.' }}</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Access Section -->
-            <section id="access" class="py-20 bg-navy/80 relative">
-                <div class="container mx-auto px-6">
-                    <div class="text-center mb-16">
-                        <div class="inline-block font-display text-sm uppercase tracking-wider text-silver mb-3">04_ACCESS</div>
-                        <h2 class="font-display text-3xl md:text-5xl font-bold">
-                            {{ language === 'en' ? 'JOIN THE ' : 'અમારી સાથે ' }}
-                            <span class="text-crimson">{{ language === 'en' ? 'REVOLUTION' : 'જોડાઓ' }}</span>
-                        </h2>
-                    </div>
-                    
-                    <div class="grid md:grid-cols-2 gap-12 max-w-5xl mx-auto">
-                        <div>
-                            <p class="text-xl mb-8">{{ language === 'en' ? 'Be among the first athletes to broadcast on SPORTYFY.LIVE. Limited spots available for our Ahmedabad beta launch.' : 'SPORTYFY.LIVE પર પ્રસારણ કરનારા પ્રથમ ખેલાડીઓમાંના એક બનો. અમારા અમદાવાદ બીટા લોન્ચ માટે મર્યાદિત સ્પોટ્સ ઉપલબ્ધ છે.' }}</p>
-                            
-                            <div class="flex flex-col gap-6">
-                                <div class="flex items-center gap-4">
-                                    <div class="w-6 h-6 bg-crimson rounded-full flex items-center justify-center relative">
-                                        <div class="w-2 h-2 bg-white rounded-full"></div>
-                                    </div>
-                                    <div>
-                                        <div class="text-sm text-silver">{{ language === 'en' ? 'CURRENT PHASE' : 'વર્તમાન તબક્કો' }}</div>
-                                        <div class="font-display font-bold">{{ language === 'en' ? 'WAITLIST REGISTRATION' : 'વેઇટલિસ્ટ રજિસ્ટ્રેશન' }}</div>
-                                    </div>
-                                </div>
-                                
-                                <div class="flex items-center gap-4">
-                                    <div class="w-6 h-6 border border-silver/30 rounded-full flex items-center justify-center relative">
-                                        <div class="w-2 h-2 bg-silver/50 rounded-full"></div>
-                                    </div>
-                                    <div>
-                                        <div class="text-sm text-silver">{{ language === 'en' ? 'Q2 2025' : 'Q2 2025' }}</div>
-                                        <div class="font-display font-bold">{{ language === 'en' ? 'AHMEDABAD BETA LAUNCH' : 'અમદાવાદ બીટા લોન્ચ' }}</div>
-                                    </div>
-                                </div>
-                                
-                                <div class="flex items-center gap-4">
-                                    <div class="w-6 h-6 border border-silver/30 rounded-full flex items-center justify-center relative">
-                                        <div class="w-2 h-2 bg-silver/50 rounded-full"></div>
-                                    </div>
-                                    <div>
-                                        <div class="text-sm text-silver">{{ language === 'en' ? 'JULY 2025' : 'જુલાઈ 2025' }}</div>
-                                        <div class="font-display font-bold">{{ language === 'en' ? 'INDIA-WIDE ROLLOUT' : 'ભારત-વ્યાપક રોલઆઉટ' }}</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="bg-navy/40 backdrop-blur-sm border border-white/5 p-8 rounded-lg">
-                            <div class="text-center mb-8">
-                                <h3 class="font-display text-2xl font-bold mb-2">{{ language === 'en' ? 'REQUEST EARLY ACCESS' : 'અર્લી એક્સેસની વિનંતી કરો' }}</h3>
-                                <p class="text-silver text-sm">{{ language === 'en' ? 'Limited spots available. Priority given to Ahmedabad-based athletes.' : 'મર્યાદિત સ્પોટ્સ ઉપલબ્ધ છે. અમદાવાદ-આધારિત ખેલાડીઓને પ્રાધાન્ય આપવામાં આવે છે.' }}</p>
-                            </div>
-                            
-                            <form @submit.prevent="submitForm" class="space-y-6">
-                                <div>
-                                    <label class="block text-sm font-medium mb-2">{{ language === 'en' ? 'FULL NAME' : 'પૂરું નામ' }}</label>
-                                    <input v-model="form.name" type="text" class="w-full p-3 bg-navy border border-silver/30 rounded focus:outline-none focus:border-crimson transition-colors" required>
-                                </div>
-                                
-                                <div>
-                                    <label class="block text-sm font-medium mb-2">{{ language === 'en' ? 'EMAIL ADDRESS' : 'ઈમેઈલ એડ્રેસ' }}</label>
-                                    <input v-model="form.email" type="email" class="w-full p-3 bg-navy border border-silver/30 rounded focus:outline-none focus:border-crimson transition-colors" required>
-                                </div>
-                                
-                                <div>
-                                    <label class="block text-sm font-medium mb-2">{{ language === 'en' ? 'MOBILE NUMBER (FOR UPI)' : 'મોબાઈલ નંબર (UPI માટે)' }}</label>
-                                    <input v-model="form.phone" type="tel" class="w-full p-3 bg-navy border border-silver/30 rounded focus:outline-none focus:border-crimson transition-colors" required>
-                                </div>
-                                
-                                <div>
-                                    <label class="block text-sm font-medium mb-2">{{ language === 'en' ? 'PRIMARY SPORT' : 'પ્રાથમિક રમત' }}</label>
-                                    <select v-model="form.sport" class="w-full p-3 bg-navy border border-silver/30 rounded focus:outline-none focus:border-crimson transition-colors" required>
-                                        <option value="" disabled>{{ language === 'en' ? 'Select your primary sport' : 'તમારી પ્રાથમિક રમત પસંદ કરો' }}</option>
-                                        <option value="cricket">{{ language === 'en' ? 'Cricket' : 'ક્રિકેટ' }}</option>
-                                        <option value="basketball">{{ language === 'en' ? 'Basketball' : 'બાસ્કેટબોલ' }}</option>
-                                        <option value="pickleball">{{ language === 'en' ? 'Pickle Ball' : 'પિકલ બોલ' }}</option>
-                                        <option value="football">{{ language === 'en' ? 'Football' : 'ફૂટબોલ' }}</option>
-                                        <option value="other">{{ language === 'en' ? 'Other' : 'અન્ય' }}</option>
-                                    </select>
-                                </div>
-                                
-                                <div>
-                                    <label class="block text-sm font-medium mb-2">{{ language === 'en' ? 'CITY' : 'શહેર' }}</label>
-                                    <select v-model="form.city" class="w-full p-3 bg-navy border border-silver/30 rounded focus:outline-none focus:border-crimson transition-colors" required>
-                                        <option value="" disabled>{{ language === 'en' ? 'Select your city' : 'તમારું શહેર પસંદ કરો' }}</option>
-                                        <option value="ahmedabad">{{ language === 'en' ? 'Ahmedabad' : 'અમદાવાદ' }}</option>
-                                        <option value="surat">{{ language === 'en' ? 'Surat' : 'સુરત' }}</option>
-                                        <option value="vadodara">{{ language === 'en' ? 'Vadodara' : 'વડોદરા' }}</option>
-                                        <option value="rajkot">{{ language === 'en' ? 'Rajkot' : 'રાજકોટ' }}</option>
-                                        <option value="other">{{ language === 'en' ? 'Other City' : 'અન્ય શહેર' }}</option>
-                                    </select>
-                                </div>
-                                
-                                <button type="submit" class="w-full bg-crimson hover:bg-crimson/80 text-white py-3 rounded font-display font-bold tracking-wider uppercase text-sm transition-colors" :disabled="formSubmitted">
-                                    <span v-if="!formSubmitted">{{ language === 'en' ? 'SUBMIT APPLICATION' : 'અરજી સબમિટ કરો' }}</span>
-                                    <span v-else>{{ language === 'en' ? 'SUBMITTED!' : 'સબમિટ થયું!' }}</span>
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Quote Section -->
-            <section class="py-16 bg-crimson relative overflow-hidden">
-                <div class="container mx-auto px-6 text-center relative z-10">
-                    <blockquote class="font-display text-3xl md:text-5xl font-bold italic mb-6">
-                        "{{ language === 'en' ? 'SEE YOURSELF. BE SEEN.' : 'તમારી જાતને જુઓ. જોવામાં આવો.' }}"
-                    </blockquote>
-                    <p class="text-xl">{{ language === 'en' ? 'Join the waitlist today.' : 'આજે જ વેઇટલિસ્ટમાં જોડાઓ.' }}</p>
-                </div>
-                <div class="absolute top-0 right-0 w-full h-full bg-gradient-to-l from-navy/40 to-transparent"></div>
-            </section>
-        </main>
-
-        <footer class="bg-navy py-12 relative z-10">
-            <div class="container mx-auto px-6">
-                <div class="flex flex-col md:flex-row justify-between items-center mb-12">
-                    <div class="mb-8 md:mb-0">
-                        <div class="font-display text-3xl font-bold tracking-wider mb-2">
-                            <span class="text-crimson">SPORTYFY</span><span class="text-white">.LIVE</span>
-                        </div>
-                        <div class="text-silver text-sm uppercase tracking-wider">{{ language === 'en' ? 'BROADCAST YOUR GAME. CLAIM YOUR FAME.' : 'તમારી રમત પ્રસારિત કરો. તમારી પ્રસિદ્ધિ મેળવો.' }}</div>
-                    </div>
-                    
-                    <div class="flex flex-col md:flex-row gap-8 md:gap-16">
-                        <div>
-                            <div class="font-display uppercase font-bold text-sm mb-4">{{ language === 'en' ? 'CONTACT' : 'સંપર્ક' }}</div>
-                            <a href="mailto:info@sportyfy.live" class="text-silver hover:text-white transition-colors text-sm">info@sportyfy.live</a>
-                        </div>
-                        
-                        <div>
-                            <div class="font-display uppercase font-bold text-sm mb-4">{{ language === 'en' ? 'LEGAL' : 'કાયદાકીય' }}</div>
-                            <div class="flex flex-col gap-2">
-                                <a href="#" class="text-silver hover:text-white transition-colors text-sm">{{ language === 'en' ? 'Privacy Policy' : 'પ્રાઇવસી પોલિસી' }}</a>
-                                <a href="#" class="text-silver hover:text-white transition-colors text-sm">{{ language === 'en' ? 'Terms of Service' : 'સેવાની શરતો' }}</a>
-                            </div>
-                        </div>
-                        
-                        <div>
-                            <div class="font-display uppercase font-bold text-sm mb-4">{{ language === 'en' ? 'FOLLOW US' : 'અમને ફોલો કરો' }}</div>
-                            <div class="flex gap-4">
-                                <a href="#" class="text-silver hover:text-white transition-colors">
-                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84"></path>
-                                    </svg>
-                                </a>
-                                <a href="#" class="text-silver hover:text-white transition-colors">
-                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                        <path fill-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.054.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z" clip-rule="evenodd"></path>
-                                    </svg>
-                                </a>
-                                <a href="#" class="text-silver hover:text-white transition-colors">
-                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                        <path fill-rule="evenodd" d="M19.812 5.418c.861.23 1.538.907 1.768 1.768C21.998 8.746 22 12 22 12s0 3.255-.418 4.814a2.504 2.504 0 0 1-1.768 1.768c-1.56.419-7.814.419-7.814.419s-6.255 0-7.814-.419a2.505 2.505 0 0 1-1.768-1.768C2 15.255 2 12 2 12s0-3.255.417-4.814a2.507 2.507 0 0 1 1.768-1.768C5.744 5 11.998 5 11.998 5s6.255 0 7.814.418ZM15.194 12 10 15V9l5.194 3Z" clip-rule="evenodd"></path>
-                                    </svg>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="pt-8 mt-8 border-t border-white/10 text-center">
-                    <div class="text-silver text-sm">© 2025 SPORTYFY.LIVE. {{ language === 'en' ? 'All rights reserved.' : 'બધા હકો અમારી પાસે રાખેલા છે.' }}</div>
-                </div>
+        <div class="border-t border-gray-800 pt-8 pb-4">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+              <h5 class="text-xl font-bold mb-4">CONTACT</h5>
+              <a
+                href="mailto:info@sportyfy.live"
+                class="text-gray-400 hover:text-sporty-red"
+                >info@sportyfy.live</a
+              >
             </div>
-        </footer>
-    </div>
+            <div>
+              <h5 class="text-xl font-bold mb-4">LEGAL</h5>
+              <a href="#" class="text-gray-400 hover:text-sporty-red block mb-2"
+                >Privacy Policy</a
+              >
+              <a href="#" class="text-gray-400 hover:text-sporty-red block mb-2"
+                >Terms of Service</a
+              >
+            </div>
+            <div>
+              <h5 class="text-xl font-bold mb-4">FOLLOW US</h5>
+              <div class="flex space-x-4">
+                <a href="#" class="text-gray-400 hover:text-sporty-red text-2xl"
+                  ><i class="fab fa-twitter"></i
+                ></a>
+                <a href="#" class="text-gray-400 hover:text-sporty-red text-2xl"
+                  ><i class="fab fa-instagram"></i
+                ></a>
+                <a href="#" class="text-gray-400 hover:text-sporty-red text-2xl"
+                  ><i class="fab fa-youtube"></i
+                ></a>
+                <a href="#" class="text-gray-400 hover:text-sporty-red text-2xl"
+                  ><i class="fab fa-facebook"></i
+                ></a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-center mt-8 text-gray-500">
+          <p>© 2025 SPORTYFY.LIVE. All rights reserved.</p>
+          <p class="mt-2 text-sm italic">***"SEE YOURSELF. BE SEEN."***</p>
+        </div>
+      </div>
+    </footer>
 
     <script>
-        const app = Vue.createApp({
-            data() {
-                return {
-                    loading: true,
-                    loadingProgress: 0,
-                    loadingStatus: 'INITIALIZING...',
-                    language: 'en',
-                    scrolled: false,
-                    mobileMenuOpen: false,
-                    viewerCount: '1,247',
-                    earnings: '5,340',
-                    form: {
-                        name: '',
-                        email: '',
-                        phone: '',
-                        sport: '',
-                        city: ''
-                    },
-                    formSubmitted: false
-                }
-            },
-            methods: {
-                switchLanguage(lang) {
-                    this.language = lang;
-                    
-                    // Close mobile menu if open
-                    if (this.mobileMenuOpen) {
-                        this.mobileMenuOpen = false;
-                    }
-                },
-                toggleMobileMenu() {
-                    this.mobileMenuOpen = !this.mobileMenuOpen;
-                },
-                closeMobileMenu() {
-                    this.mobileMenuOpen = false;
-                },
-                submitForm() {
-                    // In a real app, you would submit this data to your server
-                    console.log('Form submitted:', this.form);
-                    
-                    // Show success state
-                    this.formSubmitted = true;
-                    
-                    // Reset form
-                    setTimeout(() => {
-                        this.form = {
-                            name: '',
-                            email: '',
-                            phone: '',
-                            sport: '',
-                            city: ''
-                        };
-                        
-                        // Reset submission state after 3 seconds
-                        setTimeout(() => {
-                            this.formSubmitted = false;
-                        }, 3000);
-                    }, 1000);
-                },
-                simulateLoading() {
-                    const steps = [
-                        { progress: 15, message: this.language === 'en' ? 'INITIALIZING SYSTEM...' : 'સિસ્ટમ શરૂ કરી રહ્યું છે...' },
-                        { progress: 30, message: this.language === 'en' ? 'LOADING INTERFACE...' : 'ઇન્ટરફેસ લોડ થઈ રહ્યું છે...' },
-                        { progress: 50, message: this.language === 'en' ? 'ESTABLISHING CONNECTION...' : 'કનેક્શન સ્થાપિત કરી રહ્યું છે...' },
-                        { progress: 75, message: this.language === 'en' ? 'PREPARING LIVE STREAM...' : 'લાઇવ સ્ટ્રીમ તૈયાર કરી રહ્યું છે...' },
-                        { progress: 90, message: this.language === 'en' ? 'ALMOST READY...' : 'લગભગ તૈયાર છે...' },
-                        { progress: 100, message: this.language === 'en' ? 'WELCOME TO SPORTYFY.LIVE' : 'SPORTYFY.LIVE માં આપનું સ્વાગત છે' }
-                    ];
-                    
-                    let currentStep = 0;
-                    
-                    const interval = setInterval(() => {
-                        if (currentStep < steps.length) {
-                            this.loadingProgress = steps[currentStep].progress;
-                            this.loadingStatus = steps[currentStep].message;
-                            currentStep++;
-                        } else {
-                            clearInterval(interval);
-                            
-                            // Hide loading screen
-                            setTimeout(() => {
-                                this.loading = false;
-                                this.startViewerSimulation();
-                            }, 500);
-                        }
-                    }, 700);
-                },
-                startViewerSimulation() {
-                    // Simulate live viewer count changes
-                    setInterval(() => {
-                        // Generate a random change between -5 and +10 viewers
-                        const change = Math.floor(Math.random() * 16) - 5;
-                        
-                        // Parse current count and apply change
-                        const currentCount = parseInt(this.viewerCount.replace(/,/g, ''));
-                        const newCount = Math.max(1000, currentCount + change);
-                        // Format with commas and update
-                        this.viewerCount = newCount.toLocaleString();
-                        
-                        // Update earnings based on viewers (random amount per minute)
-                        const earningsPerViewer = Math.random() * 0.02; // Random amount per viewer
-                        const earningsChange = Math.floor(newCount * earningsPerViewer);
-                        const currentEarnings = parseInt(this.earnings.replace(/,/g, ''));
-                        this.earnings = (currentEarnings + earningsChange).toLocaleString();
-                    }, 3000);
-                },
-                handleScroll() {
-                    this.scrolled = window.scrollY > 50;
-                }
-            },
-            mounted() {
-                // Start loading sequence
-                this.simulateLoading();
-                
-                // Add scroll event listener
-                window.addEventListener('scroll', this.handleScroll);
-                
-                // Handle smooth scrolling for anchor links
-                document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                    anchor.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        
-                        const targetId = this.getAttribute('href');
-                        if (targetId === '#') return;
-                        
-                        const targetElement = document.querySelector(targetId);
-                        if (targetElement) {
-                            window.scrollTo({
-                                top: targetElement.offsetTop - 100, // Offset for header
-                                behavior: 'smooth'
-                            });
-                        }
-                    });
-                });
-            },
-            beforeUnmount() {
-                window.removeEventListener('scroll', this.handleScroll);
+      // Quiz Navigation
+      document.addEventListener("DOMContentLoaded", function () {
+        const steps = document.querySelectorAll(".quiz-step");
+        const nextBtn = document.getElementById("next-btn");
+        const prevBtn = document.getElementById("prev-btn");
+        const progressDots = document.querySelectorAll(".quiz-progress span");
+        let currentStep = 1;
+
+        // Player types for results
+        const playerTypes = [
+          {
+            type: "RISING STAR",
+            description:
+              "You're ready to showcase your skills and build your brand. SPORTYFY.LIVE is perfect for athletes like you who want to be seen and recognized!",
+          },
+          {
+            type: "COMMUNITY CHAMPION",
+            description:
+              "You're all about bringing people together through sports. With SPORTYFY.LIVE, you'll create a following that celebrates your game!",
+          },
+          {
+            type: "MONETIZATION MASTER",
+            description:
+              "You know your worth! SPORTYFY.LIVE will help you earn from your talent and connect with sponsors who value your skills.",
+          },
+          {
+            type: "SKILLS TRACKER",
+            description:
+              "You're focused on improvement and progress. SPORTYFY.LIVE will help you document your journey and analyze your growth.",
+          },
+        ];
+
+        function updateStep() {
+          steps.forEach((step) => step.classList.add("hidden"));
+          steps[currentStep - 1].classList.remove("hidden");
+
+          // Update progress dots
+          progressDots.forEach((dot, index) => {
+            if (index < currentStep) {
+              dot.classList.remove("bg-gray-600");
+              dot.classList.add("bg-sporty-red");
+            } else {
+              dot.classList.remove("bg-sporty-red");
+              dot.classList.add("bg-gray-600");
             }
-        }).mount('#app');
+          });
+
+          // Show/hide prev button
+          if (currentStep > 1) {
+            prevBtn.classList.remove("hidden");
+          } else {
+            prevBtn.classList.add("hidden");
+          }
+
+          // Update next button text for final step
+          if (currentStep === steps.length - 1) {
+            nextBtn.innerHTML =
+              'See Results <i class="fas fa-arrow-right ml-2"></i>';
+          } else if (currentStep === steps.length) {
+            nextBtn.classList.add("hidden");
+          } else {
+            nextBtn.innerHTML = 'Next <i class="fas fa-arrow-right ml-2"></i>';
+            nextBtn.classList.remove("hidden");
+          }
+        }
+
+        // Event listeners for quiz options
+        document.querySelectorAll(".quiz-option").forEach((option) => {
+          option.addEventListener("click", function () {
+            // Remove selection from siblings
+            const parent = this.parentElement;
+            parent.querySelectorAll(".quiz-option").forEach((opt) => {
+              opt.classList.remove("border-sporty-red");
+              opt.classList.add("border-transparent");
+            });
+
+            // Add selection to clicked option
+            this.classList.remove("border-transparent");
+            this.classList.add("border-sporty-red");
+          });
+        });
+
+        // Next button
+        nextBtn.addEventListener("click", function () {
+          if (currentStep < steps.length) {
+            currentStep++;
+            updateStep();
+
+            // If final step, set random player type result
+            if (currentStep === steps.length) {
+              const randomType =
+                playerTypes[Math.floor(Math.random() * playerTypes.length)];
+              document.getElementById("player-type").textContent =
+                randomType.type;
+              document.getElementById("player-description").textContent =
+                randomType.description;
+            }
+          }
+        });
+
+        // Previous button
+        prevBtn.addEventListener("click", function () {
+          if (currentStep > 1) {
+            currentStep--;
+            updateStep();
+          }
+        });
+
+        // Form submission
+        const form = document.getElementById("waitlist-form");
+        if (form) {
+          form.addEventListener("submit", function (e) {
+            e.preventDefault();
+            alert(
+              "🏏 You're on the SPORTYFY.LIVE waitlist! Get ready to broadcast your game and CLAIM YOUR FAME!"
+            );
+          });
+        }
+
+        // Initialize - show first step
+        updateStep();
+
+        // Live counter animations
+        function animateValue(obj, start, end, duration) {
+          let startTimestamp = null;
+          const step = (timestamp) => {
+            if (!startTimestamp) startTimestamp = timestamp;
+            const progress = Math.min(
+              (timestamp - startTimestamp) / duration,
+              1
+            );
+            const value = Math.floor(progress * (end - start) + start);
+            obj.innerHTML = value.toLocaleString();
+            if (progress < 1) {
+              window.requestAnimationFrame(step);
+            }
+          };
+          window.requestAnimationFrame(step);
+        }
+
+        // Animate viewers
+        const viewersCounter = document.getElementById("viewersCounter");
+        if (viewersCounter) {
+          animateValue(viewersCounter, 1550, 1730, 2000);
+        }
+
+        // Animate earnings with currency symbol
+        const earningsCounter = document.getElementById("earningsCounter");
+        if (earningsCounter) {
+          let startTimestamp = null;
+          const startValue = 5000;
+          const endValue = 7941;
+          const duration = 2500;
+
+          const step = (timestamp) => {
+            if (!startTimestamp) startTimestamp = timestamp;
+            const progress = Math.min(
+              (timestamp - startTimestamp) / duration,
+              1
+            );
+            const value = Math.floor(
+              progress * (endValue - startValue) + startValue
+            );
+            earningsCounter.innerHTML = "₹" + value.toLocaleString();
+            if (progress < 1) {
+              window.requestAnimationFrame(step);
+            }
+          };
+          window.requestAnimationFrame(step);
+        }
+
+        // Scroll animations
+        const scrollElements = document.querySelectorAll(".scroll-reveal");
+
+        const elementInView = (el, dividend = 1) => {
+          const elementTop = el.getBoundingClientRect().top;
+          return (
+            elementTop <=
+            (window.innerHeight || document.documentElement.clientHeight) /
+              dividend
+          );
+        };
+
+        const displayScrollElement = (element) => {
+          element.classList.add("scrolled");
+        };
+
+        const hideScrollElement = (element) => {
+          element.classList.remove("scrolled");
+        };
+
+        const handleScrollAnimation = () => {
+          scrollElements.forEach((el) => {
+            if (elementInView(el, 1.25)) {
+              displayScrollElement(el);
+            } else {
+              hideScrollElement(el);
+            }
+          });
+        };
+
+        window.addEventListener("scroll", handleScrollAnimation);
+
+        // Initial check on page load
+        handleScrollAnimation();
+      });
+
+      // Add some parallax effects for flair
+      window.addEventListener("mousemove", function (e) {
+        const moveX = (e.clientX - window.innerWidth / 2) * 0.01;
+        const moveY = (e.clientY - window.innerHeight / 2) * 0.01;
+
+        const parallaxElements = document.querySelectorAll(".blob");
+        parallaxElements.forEach((element) => {
+          element.style.transform = `translate(${moveX}px, ${moveY}px)`;
+        });
+      });
+
+      // Smooth scrolling for anchor links
+      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener("click", function (e) {
+          e.preventDefault();
+
+          const targetId = this.getAttribute("href");
+          const targetElement = document.querySelector(targetId);
+
+          if (targetElement) {
+            window.scrollTo({
+              top: targetElement.offsetTop - 80, // Adjust for navbar height
+              behavior: "smooth",
+            });
+          }
+        });
+      });
+
+      // Show/hide navbar on scroll
+      let lastScrollTop = 0;
+      const navbar = document.querySelector("nav");
+
+      window.addEventListener("scroll", function () {
+        const scrollTop =
+          window.pageYOffset || document.documentElement.scrollTop;
+
+        if (scrollTop > lastScrollTop && scrollTop > 200) {
+          // Scrolling down & past the hero
+          navbar.style.transform = "translateY(-100%)";
+        } else {
+          // Scrolling up or at the top
+          navbar.style.transform = "translateY(0)";
+        }
+
+        lastScrollTop = scrollTop;
+      });
+
+      // Simulate live counter updates
+      setInterval(() => {
+        const viewersCounter = document.getElementById("viewersCounter");
+        const earningsCounter = document.getElementById("earningsCounter");
+
+        if (viewersCounter && earningsCounter) {
+          // Get current values
+          let currentViewers = parseInt(
+            viewersCounter.textContent.replace(/,/g, "")
+          );
+          let currentEarnings = parseInt(
+            earningsCounter.textContent.replace(/₹|,/g, "")
+          );
+
+          // Random change
+          const viewersChange = Math.floor(Math.random() * 5) - 2; // -2 to +2
+          const earningsChange = Math.floor(Math.random() * 30); // 0 to 29
+
+          // Apply changes
+          currentViewers = Math.max(1500, currentViewers + viewersChange);
+          currentEarnings = currentEarnings + earningsChange;
+
+          // Update display
+          viewersCounter.textContent = currentViewers.toLocaleString();
+          earningsCounter.textContent = "₹" + currentEarnings.toLocaleString();
+        }
+      }, 5000); // Update every 5 seconds
     </script>
-</body>
+  </body>
 </html>
