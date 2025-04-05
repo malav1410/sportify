@@ -1,415 +1,555 @@
 // Wait for the DOM to be fully loaded
 document.addEventListener('DOMContentLoaded', function() {
-    // Simulate loading screen
-    const loadingScreen = document.getElementById('loadingScreen');
-    const loadingProgress = document.getElementById('loadingProgress');
-    const loadingStatus = document.getElementById('loadingStatus');
-    const viewerCount = document.getElementById('viewerCount');
+    console.log("SPORTYFY.LIVE script loaded - Mamba Edition 🏆");
     
-    // Loading sequence steps
-    const loadingSteps = [
-        { progress: 15, message: 'INITIALIZING PROTOCOL' },
-        { progress: 30, message: 'ESTABLISHING NEURAL CONNECTION' },
-        { progress: 45, message: 'SCANNING ENVIRONMENT' },
-        { progress: 65, message: 'CALIBRATING STREAM PARAMETERS' },
-        { progress: 80, message: 'OPTIMIZING PERFORMANCE METRICS' },
-        { progress: 95, message: 'FINALIZING SYSTEM INTEGRATION' },
-        { progress: 100, message: 'SYSTEM READY' }
+    // ==============================================
+    // USER SELECTIONS TRACKING
+    // ==============================================
+    const userSelections = {
+        sport: null,
+        goal: null,
+        location: null
+    };
+
+    // ==============================================
+    // QUIZ NAVIGATION
+    // ==============================================
+    const steps = document.querySelectorAll(".quiz-step");
+    const nextBtn = document.getElementById("next-btn");
+    const prevBtn = document.getElementById("prev-btn");
+    const progressDots = document.querySelectorAll(".quiz-progress span");
+    let currentStep = 1;
+
+    // Player types for results
+    const playerTypes = [
+        {
+            type: "RISING STAR",
+            description: "You're ready to showcase your skills and build your brand. SPORTYFY.LIVE is perfect for athletes like you who want to be seen and recognized!",
+        },
+        {
+            type: "COMMUNITY CHAMPION",
+            description: "You're all about bringing people together through sports. With SPORTYFY.LIVE, you'll create a following that celebrates your game!",
+        },
+        {
+            type: "MONETIZATION MASTER",
+            description: "You know your worth! SPORTYFY.LIVE will help you earn from your talent and connect with sponsors who value your skills.",
+        },
+        {
+            type: "SKILLS TRACKER",
+            description: "You're focused on improvement and progress. SPORTYFY.LIVE will help you document your journey and analyze your growth.",
+        }
     ];
-    
-    // Execute loading sequence
-    let currentStep = 0;
-    
-    const loadingInterval = setInterval(function() {
-        if (currentStep >= loadingSteps.length) {
-            clearInterval(loadingInterval);
-            setTimeout(function() {
-                loadingScreen.style.opacity = '0';
-                setTimeout(function() {
-                    loadingScreen.style.display = 'none';
-                    startPageAnimations();
-                }, 500);
-            }, 800);
-            return;
-        }
-        
-        const step = loadingSteps[currentStep];
-        loadingProgress.style.width = step.progress + '%';
-        loadingStatus.textContent = step.message;
-        currentStep++;
-    }, 700);
-    
-    // Start main page animations after loading
-    function startPageAnimations() {
-        // Handle header scroll behavior
-        const header = document.querySelector('.main-header');
-        
-        window.addEventListener('scroll', function() {
-            if (window.scrollY > 50) {
-                header.classList.add('scrolled');
+
+    function updateStep() {
+        steps.forEach((step) => step.classList.add("hidden"));
+        steps[currentStep - 1].classList.remove("hidden");
+
+        // Update progress dots
+        progressDots.forEach((dot, index) => {
+            if (index < currentStep) {
+                dot.classList.remove("bg-gray-600");
+                dot.classList.add("bg-sporty-red");
             } else {
-                header.classList.remove('scrolled');
+                dot.classList.remove("bg-sporty-red");
+                dot.classList.add("bg-gray-600");
             }
         });
+
+        // Show/hide prev button
+        if (currentStep > 1) {
+            prevBtn.classList.remove("hidden");
+        } else {
+            prevBtn.classList.add("hidden");
+        }
+
+        // Update next button text for final step
+        if (currentStep === steps.length - 1) {
+            nextBtn.innerHTML = 'See Results <svg class="w-4 h-4 inline ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>';
+        } else if (currentStep === steps.length) {
+            nextBtn.classList.add("hidden");
+        } else {
+            nextBtn.innerHTML = 'Next <svg class="w-4 h-4 inline ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>';
+            nextBtn.classList.remove("hidden");
+        }
+    }
+
+    // Validate current step
+    function validateCurrentStep() {
+        // Get active step
+        const activeStep = document.querySelector('.quiz-step:not(.hidden)');
+        const stepNumber = parseInt(activeStep.dataset.step);
         
-        // Mobile navigation toggle
-        const navToggle = document.querySelector('.nav-toggle');
-        const mainNav = document.querySelector('.main-nav');
+        console.log(`Validating step ${stepNumber}...`);
+        console.log(`Current selections:`, userSelections);
         
-        if (navToggle) {
-            navToggle.addEventListener('click', function() {
-                mainNav.classList.toggle('active');
-                navToggle.classList.toggle('active');
-            });
+        // Check if a selection was made
+        let isValid = false;
+        
+        switch(stepNumber) {
+            case 1:
+                isValid = userSelections.sport !== null;
+                break;
+            case 2:
+                isValid = userSelections.goal !== null;
+                break;
+            case 3:
+                isValid = userSelections.location !== null;
+                break;
+            case 4:
+                isValid = true; // Form validation handled separately
+                break;
         }
         
-        // Animate stats counters when in viewport
-        const stats = document.querySelectorAll('.stat-value');
+        console.log(`Step ${stepNumber} validation result: ${isValid}`);
         
-        function animateStats() {
-            stats.forEach(stat => {
-                const target = parseInt(stat.getAttribute('data-count'));
-                const span = stat.querySelector('span');
-                let current = 0;
-                const increment = target / 60; // Adjust for animation speed
-                const timer = setInterval(function() {
-                    current += increment;
-                    span.textContent = Math.floor(current);
-                    if (current >= target) {
-                        span.textContent = target;
-                        clearInterval(timer);
-                    }
-                }, 30);
-            });
+        if (!isValid) {
+            showValidationError(stepNumber);
         }
         
-        // Check if element is in viewport
-        function isInViewport(element) {
-            const rect = element.getBoundingClientRect();
-            return (
-                rect.top >= 0 &&
-                rect.left >= 0 &&
-                rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-                rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-            );
-        }
+        return isValid;
+    }
+    
+    // Show validation error
+    function showValidationError(step) {
+        // Find current step
+        const stepElement = document.querySelector(`.quiz-step[data-step="${step}"]`);
         
-        // Trigger animations when scrolling
-        let statsAnimated = false;
-        
-        window.addEventListener('scroll', function() {
-            if (!statsAnimated && stats.length > 0 && isInViewport(stats[0])) {
-                animateStats();
-                statsAnimated = true;
+        // Check if error message already exists
+        if (!stepElement.querySelector('.validation-error')) {
+            // Create motivational error message
+            const errorMsg = document.createElement('div');
+            errorMsg.className = 'validation-error text-sporty-red text-sm mt-4 animate-pulse';
+            
+            switch(step) {
+                case 1:
+                    errorMsg.innerHTML = '⚠️ CHAMPIONS MAKE CHOICES! Select your sport to continue.';
+                    break;
+                case 2:
+                    errorMsg.innerHTML = '⚠️ GREATNESS HAS A PURPOSE! Choose your goal to proceed.';
+                    break;
+                case 3:
+                    errorMsg.innerHTML = "⚠️ LEGENDS START SOMEWHERE! Tell us where you're based.";
+                    break;
             }
-        });
-        
-        // Initial check for elements in viewport
-        setTimeout(function() {
-            if (!statsAnimated && stats.length > 0 && isInViewport(stats[0])) {
-                animateStats();
-                statsAnimated = true;
-            }
-        }, 500);
-        
-        // Simulate live viewer count updates
-        if (viewerCount) {
-            setInterval(function() {
-                const currentCount = parseInt(viewerCount.textContent.replace(',', ''));
-                const change = Math.floor(Math.random() * 11) - 5; // Random change between -5 and +5
-                const newCount = Math.max(1000, currentCount + change);
-                viewerCount.textContent = newCount.toLocaleString();
+            
+            // Add error message to step
+            const navElement = document.querySelector('.quiz-nav');
+            navElement.parentNode.insertBefore(errorMsg, navElement);
+            
+            // Flash options to draw attention
+            stepElement.querySelectorAll('.quiz-option').forEach(option => {
+                option.classList.add('border-gray-700', 'animate-pulse');
+                
+                setTimeout(() => {
+                    option.classList.remove('border-gray-700', 'animate-pulse');
+                }, 1000);
+            });
+            
+            // Remove error after 3 seconds
+            setTimeout(() => {
+                if (errorMsg.parentNode) {
+                    errorMsg.parentNode.removeChild(errorMsg);
+                }
             }, 3000);
         }
-        
-        // Add reveal animations for sections
-        const revealElements = document.querySelectorAll('.section-header, .feature-card, .intro-card, .sport-card, .showcase-visual, .access-form');
-        
-        function revealElement(element) {
-            element.classList.add('revealed');
-        }
-        
-        window.addEventListener('scroll', function() {
-            revealElements.forEach(element => {
-                if (isInViewport(element) && !element.classList.contains('revealed')) {
-                    setTimeout(function() {
-                        revealElement(element);
-                    }, 150);
-                }
+    }
+
+    // Event listeners for quiz options
+    document.querySelectorAll(".quiz-option").forEach((option) => {
+        option.addEventListener("click", function() {
+            // Remove selection from siblings
+            const parent = this.parentElement;
+            parent.querySelectorAll(".quiz-option").forEach((opt) => {
+                opt.classList.remove("border-sporty-red");
+                opt.classList.add("border-transparent");
             });
-        });
-        
-        // Initial check for elements in viewport
-        revealElements.forEach(element => {
-            if (isInViewport(element)) {
-                setTimeout(function() {
-                    revealElement(element);
-                }, 150);
+
+            // Add selection to clicked option
+            this.classList.remove("border-transparent");
+            this.classList.add("border-sporty-red");
+            
+            // Store selection based on step
+            const stepElement = this.closest('.quiz-step');
+            const stepNumber = parseInt(stepElement.dataset.step);
+            
+            // Get option value (data attribute or "selected" if none)
+            const value = this.dataset.value || 'selected';
+            
+            switch(stepNumber) {
+                case 1:
+                    userSelections.sport = value;
+                    console.log("Sport selected:", value);
+                    break;
+                case 2:
+                    userSelections.goal = value;
+                    console.log("Goal selected:", value);
+                    break;
+                case 3:
+                    userSelections.location = value;
+                    console.log("Location selected:", value);
+                    break;
             }
-        });
-        
-        // Smooth scrolling for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                const targetId = this.getAttribute('href');
-                if (targetId === '#') return;
-                
-                const targetElement = document.querySelector(targetId);
-                if (targetElement) {
-                    // Close mobile menu if open
-                    if (mainNav.classList.contains('active')) {
-                        mainNav.classList.remove('active');
-                        navToggle.classList.remove('active');
-                    }
+            
+            // Handle "Other" options with input fields
+            const otherInput = this.querySelector('input[data-other-input]');
+            if (otherInput) {
+                const field = otherInput.dataset.otherInput;
+                if (otherInput.value.trim()) {
+                    // Already has value, update userSelections
+                    if (field === 'sport') userSelections.sport = otherInput.value.trim();
+                    if (field === 'goal') userSelections.goal = otherInput.value.trim();
+                    if (field === 'location') userSelections.location = otherInput.value.trim();
+                } else {
+                    // Focus the input if empty
+                    otherInput.focus();
                     
-                    window.scrollTo({
-                        top: targetElement.offsetTop - 80, // Adjust for header height
-                        behavior: 'smooth'
+                    // Watch for input changes
+                    otherInput.addEventListener('input', function() {
+                        if (this.value.trim()) {
+                            // Update the right selection when user types
+                            if (field === 'sport') {
+                                userSelections.sport = this.value.trim();
+                                console.log("Sport text entered:", this.value.trim());
+                            }
+                            if (field === 'goal') {
+                                userSelections.goal = this.value.trim();
+                                console.log("Goal text entered:", this.value.trim());
+                            }
+                            if (field === 'location') {
+                                userSelections.location = this.value.trim();
+                                console.log("Location text entered:", this.value.trim());
+                            }
+                        } else {
+                            // Clear if empty
+                            if (field === 'sport') userSelections.sport = null;
+                            if (field === 'goal') userSelections.goal = null;
+                            if (field === 'location') userSelections.location = null;
+                        }
                     });
                 }
-            });
+            }
+        });
+    });
+
+    // Handle "Other" input direct clicks
+    document.querySelectorAll('input[data-other-input]').forEach(input => {
+        input.addEventListener('click', function(e) {
+            e.stopPropagation(); // Prevent bubbling to parent
         });
         
-        // Form submission handling
-        const waitlistForm = document.getElementById('waitlistForm');
-        if (waitlistForm) {
-            waitlistForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                // Get form values
-                const name = document.getElementById('name').value;
-                const email = document.getElementById('email').value;
-                const role = document.getElementById('role').value;
-                
-                // In a real application, you would send this data to your server
-                // For demo purposes, we'll just show a success message
-                
-                waitlistForm.innerHTML = `
-                    <div class="form-success">
-                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="success-icon">
-                            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                        <h3 class="success-title">ACCESS REQUEST SUBMITTED</h3>
-                        <p class="success-message">Thank you, ${name}. We've added you to our waitlist as a ${role.toLowerCase()}. You'll receive updates at ${email}.</p>
-                    </div>
-                `;
-            });
-        }
-        
-        // Add particle background effect
-        createParticleBackground();
-    }
-    
-    // Create particle background effect
-    function createParticleBackground() {
-        const sections = document.querySelectorAll('.features-section, .access-section');
-        
-        sections.forEach(section => {
-            // Create canvas element
-            const canvas = document.createElement('canvas');
-            canvas.classList.add('particle-canvas');
-            canvas.style.position = 'absolute';
-            canvas.style.top = '0';
-            canvas.style.left = '0';
-            canvas.style.width = '100%';
-            canvas.style.height = '100%';
-            canvas.style.pointerEvents = 'none';
-            canvas.style.zIndex = '0';
+        input.addEventListener('input', function() {
+            const field = this.dataset.otherInput;
+            const stepElement = this.closest('.quiz-step');
             
-            // Insert canvas as first child of section
-            section.style.position = 'relative';
-            section.insertBefore(canvas, section.firstChild);
-            
-            // Set canvas size
-            const setCanvasSize = () => {
-                canvas.width = section.offsetWidth;
-                canvas.height = section.offsetHeight;
-            };
-            
-            setCanvasSize();
-            window.addEventListener('resize', setCanvasSize);
-            
-            // Create particles
-            const ctx = canvas.getContext('2d');
-            const particles = [];
-            const particleCount = Math.floor(canvas.width * canvas.height / 15000); // Adjust density
-            
-            for (let i = 0; i < particleCount; i++) {
-                particles.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    size: Math.random() * 3 + 1,
-                    speedX: Math.random() * 0.2 - 0.1,
-                    speedY: Math.random() * 0.2 - 0.1,
-                    opacity: Math.random() * 0.5 + 0.1
-                });
-            }
-            
-            // Animate particles
-            function animateParticles() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                
-                for (let i = 0; i < particles.length; i++) {
-                    const p = particles[i];
-                    
-                    p.x += p.speedX;
-                    p.y += p.speedY;
-                    
-                    // Wrap around edges
-                    if (p.x > canvas.width) p.x = 0;
-                    if (p.x < 0) p.x = canvas.width;
-                    if (p.y > canvas.height) p.y = 0;
-                    if (p.y < 0) p.y = canvas.height;
-                    
-                    // Draw particle
-                    ctx.beginPath();
-                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                    ctx.fillStyle = `rgba(12, 255, 127, ${p.opacity})`;
-                    ctx.fill();
+            if (this.value.trim()) {
+                // Store the input value in the right selection
+                if (field === 'sport') {
+                    userSelections.sport = this.value.trim();
+                    console.log("Sport text entered:", this.value.trim());
+                }
+                if (field === 'goal') {
+                    userSelections.goal = this.value.trim();
+                    console.log("Goal text entered:", this.value.trim());
+                }
+                if (field === 'location') {
+                    userSelections.location = this.value.trim();
+                    console.log("Location text entered:", this.value.trim());
                 }
                 
-                requestAnimationFrame(animateParticles);
+                // Also select the parent option visually
+                stepElement.querySelectorAll('.quiz-option').forEach(opt => {
+                    opt.classList.remove('border-sporty-red');
+                    opt.classList.add('border-transparent');
+                });
+                
+                this.closest('.quiz-option').classList.remove('border-transparent');
+                this.closest('.quiz-option').classList.add('border-sporty-red');
             }
+        });
+    });
+
+    // CRITICAL FIX: Completely replace the Next button event handler
+    // Remove any existing event listeners by cloning and replacing the button
+    const oldNextBtn = document.getElementById("next-btn");
+    const newNextBtn = oldNextBtn.cloneNode(true);
+    oldNextBtn.parentNode.replaceChild(newNextBtn, oldNextBtn);
+    
+    // Add the new event listener with proper validation
+    newNextBtn.addEventListener("click", function(e) {
+        console.log("Next button clicked");
+        
+        // Only proceed if current step is valid
+        if (!validateCurrentStep()) {
+            console.log("Validation failed! Stopping navigation.");
+            return false;
+        }
+        
+        console.log("Validation passed! Proceeding to next step.");
+        
+        if (currentStep < steps.length) {
+            currentStep++;
+            updateStep();
             
-            animateParticles();
+            // If final step, set player type result
+            if (currentStep === steps.length) {
+                // Set player type based on selections (simplified for demo)
+                let playerType = "RISING STAR";
+                
+                if (userSelections.goal === 'money') {
+                    playerType = "MONETIZATION MASTER";
+                } else if (userSelections.goal === 'community') {
+                    playerType = "COMMUNITY CHAMPION";
+                } else if (userSelections.goal === 'discover') {
+                    playerType = "RISING STAR";
+                }
+                
+                console.log("Setting player type:", playerType);
+                
+                // Update player description
+                const playerDescription = document.getElementById('player-description');
+                if (playerDescription) {
+                    // Keep default text or customize based on selections
+                }
+            }
+        }
+    });
+
+    // Previous button
+    prevBtn.addEventListener("click", function() {
+        if (currentStep > 1) {
+            currentStep--;
+            updateStep();
+        }
+    });
+
+    // Form validation
+    const waitlistForm = document.getElementById('waitlist-form');
+    if (waitlistForm) {
+        waitlistForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form fields
+            const nameField = this.querySelector('input[name="name"]');
+            const emailField = this.querySelector('input[name="email"]');
+            const phoneField = this.querySelector('input[name="phone"]');
+            
+            // Validate
+            const isValid = 
+                nameField.value.trim() !== '' && 
+                emailField.value.trim() !== '' &&
+                phoneField.value.trim() !== '';
+            
+            if (isValid) {
+                // Form is valid, show success message
+                alert("🏆 You're on the SPORTYFY.LIVE waitlist! Get ready to broadcast your game and CLAIM YOUR FAME!");
+            } else {
+                // Highlight empty fields
+                [nameField, emailField, phoneField].forEach(field => {
+                    if (!field.value.trim()) {
+                        field.classList.add('border-sporty-red');
+                        
+                        // Remove highlight when user types
+                        field.addEventListener('input', function() {
+                            if (this.value.trim()) {
+                                this.classList.remove('border-sporty-red');
+                            }
+                        }, { once: true });
+                    }
+                });
+                
+                // Show error message
+                const errorMsg = document.createElement('div');
+                errorMsg.className = 'text-sporty-red text-sm mt-2 mb-4';
+                errorMsg.innerHTML = '⚠️ LEGENDS COMPLETE WHAT THEY START! Fill in all fields to secure your spot.';
+                
+                const submitBtn = this.querySelector('button[type="submit"]').parentNode;
+                if (!this.querySelector('.text-sporty-red')) {
+                    submitBtn.parentNode.insertBefore(errorMsg, submitBtn);
+                    
+                    // Remove error after 3 seconds
+                    setTimeout(() => {
+                        if (errorMsg.parentNode) {
+                            errorMsg.parentNode.removeChild(errorMsg);
+                        }
+                    }, 3000);
+                }
+            }
         });
     }
-    
-    // Add animated cursor effect
-    function createCustomCursor() {
-        const cursorDot = document.createElement('div');
-        cursorDot.classList.add('cursor-dot');
-        
-        const cursorRing = document.createElement('div');
-        cursorRing.classList.add('cursor-ring');
-        
-        document.body.appendChild(cursorDot);
-        document.body.appendChild(cursorRing);
-        
-        // Apply styles
-        const cursorStyles = `
-            .cursor-dot {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 8px;
-                height: 8px;
-                background-color: var(--primary);
-                border-radius: 50%;
-                pointer-events: none;
-                z-index: 9999;
-                transform: translate(-50%, -50%);
+
+    // ==============================================
+    // LIVE COUNTER ANIMATIONS
+    // ==============================================
+    function animateValue(obj, start, end, duration) {
+        let startTimestamp = null;
+        const step = (timestamp) => {
+            if (!startTimestamp) startTimestamp = timestamp;
+            const progress = Math.min(
+                (timestamp - startTimestamp) / duration,
+                1
+            );
+            const value = Math.floor(progress * (end - start) + start);
+            obj.innerHTML = value.toLocaleString();
+            if (progress < 1) {
+                window.requestAnimationFrame(step);
             }
-            
-            .cursor-ring {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 40px;
-                height: 40px;
-                border: 1px solid rgba(12, 255, 127, 0.5);
-                border-radius: 50%;
-                pointer-events: none;
-                z-index: 9998;
-                transform: translate(-50%, -50%);
-                transition: width 0.2s, height 0.2s;
-            }
-            
-            a:hover ~ .cursor-ring,
-            button:hover ~ .cursor-ring {
-                width: 60px;
-                height: 60px;
-                border-color: rgba(12, 255, 127, 0.7);
-            }
-        `;
-        
-        const styleElement = document.createElement('style');
-        styleElement.innerHTML = cursorStyles;
-        document.head.appendChild(styleElement);
-        
-        // Update cursor position
-        document.addEventListener('mousemove', function(e) {
-            cursorDot.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
-            
-            // Add slight delay to ring
-            setTimeout(function() {
-                cursorRing.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
-            }, 50);
-        });
-        
-        // Handle hovering over interactive elements
-        document.querySelectorAll('a, button, input, select').forEach(element => {
-            element.addEventListener('mouseenter', function() {
-                cursorRing.style.width = '60px';
-                cursorRing.style.height = '60px';
-                cursorRing.style.borderColor = 'rgba(12, 255, 127, 0.7)';
-            });
-            
-            element.addEventListener('mouseleave', function() {
-                cursorRing.style.width = '40px';
-                cursorRing.style.height = '40px';
-                cursorRing.style.borderColor = 'rgba(12, 255, 127, 0.5)';
-            });
-        });
+        };
+        window.requestAnimationFrame(step);
     }
-    
-    // Initialize custom cursor on desktop devices
-    if (window.matchMedia("(min-width: 992px)").matches) {
-        createCustomCursor();
+
+    // Animate viewers
+    const viewersCounter = document.getElementById("viewersCounter");
+    if (viewersCounter) {
+        animateValue(viewersCounter, 1550, 1730, 2000);
     }
+
+    // Animate earnings with currency symbol
+    const earningsCounter = document.getElementById("earningsCounter");
+    if (earningsCounter) {
+        let startTimestamp = null;
+        const startValue = 5000;
+        const endValue = 7941;
+        const duration = 2500;
+
+        const step = (timestamp) => {
+            if (!startTimestamp) startTimestamp = timestamp;
+            const progress = Math.min(
+                (timestamp - startTimestamp) / duration,
+                1
+            );
+            const value = Math.floor(
+                progress * (endValue - startValue) + startValue
+            );
+            earningsCounter.innerHTML = "₹" + value.toLocaleString();
+            if (progress < 1) {
+                window.requestAnimationFrame(step);
+            }
+        };
+        window.requestAnimationFrame(step);
+    }
+
+    // ==============================================
+    // SCROLL ANIMATIONS
+    // ==============================================
+    const scrollElements = document.querySelectorAll(".scroll-reveal");
+
+    const elementInView = (el, dividend = 1) => {
+        const elementTop = el.getBoundingClientRect().top;
+        return (
+            elementTop <=
+            (window.innerHeight || document.documentElement.clientHeight) /
+                dividend
+        );
+    };
+
+    const displayScrollElement = (element) => {
+        element.classList.add("scrolled");
+    };
+
+    const hideScrollElement = (element) => {
+        element.classList.remove("scrolled");
+    };
+
+    const handleScrollAnimation = () => {
+        scrollElements.forEach((el) => {
+            if (elementInView(el, 1.25)) {
+                displayScrollElement(el);
+            } else {
+                hideScrollElement(el);
+            }
+        });
+    };
+
+    window.addEventListener("scroll", handleScrollAnimation);
+
+    // Initial check on page load
+    handleScrollAnimation();
+
+    // ==============================================
+    // PARALLAX EFFECTS
+    // ==============================================
+    window.addEventListener("mousemove", function (e) {
+        const moveX = (e.clientX - window.innerWidth / 2) * 0.01;
+        const moveY = (e.clientY - window.innerHeight / 2) * 0.01;
+
+        const parallaxElements = document.querySelectorAll(".blob");
+        parallaxElements.forEach((element) => {
+            element.style.transform = `translate(${moveX}px, ${moveY}px)`;
+        });
+    });
+
+    // ==============================================
+    // SMOOTH SCROLLING FOR ANCHOR LINKS
+    // ==============================================
+    document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+
+            const targetId = this.getAttribute("href");
+            const targetElement = document.querySelector(targetId);
+
+            if (targetElement) {
+                window.scrollTo({
+                    top: targetElement.offsetTop - 80, // Adjust for navbar height
+                    behavior: "smooth",
+                });
+            }
+        });
+    });
+
+    // ==============================================
+    // NAVBAR SCROLL BEHAVIOR
+    // ==============================================
+    let lastScrollTop = 0;
+    const navbar = document.querySelector("nav");
+
+    window.addEventListener("scroll", function () {
+        const scrollTop =
+            window.pageYOffset || document.documentElement.scrollTop;
+
+        if (scrollTop > lastScrollTop && scrollTop > 200) {
+            // Scrolling down & past the hero
+            navbar.style.transform = "translateY(-100%)";
+        } else {
+            // Scrolling up or at the top
+            navbar.style.transform = "translateY(0)";
+        }
+
+        lastScrollTop = scrollTop;
+    });
+
+    // ==============================================
+    // LIVE COUNTER UPDATES SIMULATION
+    // ==============================================
+    setInterval(() => {
+        const viewersCounter = document.getElementById("viewersCounter");
+        const earningsCounter = document.getElementById("earningsCounter");
+
+        if (viewersCounter && earningsCounter) {
+            // Get current values
+            let currentViewers = parseInt(
+                viewersCounter.textContent.replace(/,/g, "")
+            );
+            let currentEarnings = parseInt(
+                earningsCounter.textContent.replace(/₹|,/g, "")
+            );
+
+            // Random change
+            const viewersChange = Math.floor(Math.random() * 5) - 2; // -2 to +2
+            const earningsChange = Math.floor(Math.random() * 30); // 0 to 29
+
+            // Apply changes
+            currentViewers = Math.max(1500, currentViewers + viewersChange);
+            currentEarnings = currentEarnings + earningsChange;
+
+            // Update display
+            viewersCounter.textContent = currentViewers.toLocaleString();
+            earningsCounter.textContent = "₹" + currentEarnings.toLocaleString();
+        }
+    }, 5000); // Update every 5 seconds
+
+    // Initialize - show first step of quiz
+    updateStep();
     
-    // Add CSS for reveal animations
-    const revealStyles = `
-        .section-header,
-        .feature-card,
-        .intro-card,
-        .sport-card,
-        .showcase-visual,
-        .access-form {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.8s ease, transform 0.8s ease;
-        }
-        
-        .section-header.revealed,
-        .feature-card.revealed,
-        .intro-card.revealed,
-        .sport-card.revealed,
-        .showcase-visual.revealed,
-        .access-form.revealed {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        
-        .form-success {
-            text-align: center;
-            padding: 2rem 0;
-        }
-        
-        .success-icon {
-            width: 64px;
-            height: 64px;
-            margin: 0 auto 1.5rem;
-            color: var(--primary);
-        }
-        
-        .success-title {
-            font-family: var(--font-secondary);
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-        }
-        
-        .success-message {
-            color: var(--gray);
-            line-height: 1.6;
-        }
-    `;
-    
-    // Add reveal styles to page
-    const styleElement = document.createElement('style');
-    styleElement.innerHTML = revealStyles;
-    document.head.appendChild(styleElement);
+    console.log("SPORTYFY.LIVE initialization complete - Mamba Mode Activated! 🐍");
 });
