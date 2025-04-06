@@ -413,71 +413,98 @@ function initializeStreamDemo() {
     const waitlistForm = document.getElementById('waitlist-form');
     if (waitlistForm) {
         // Replace your form submission handler with this
-waitlistForm.addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    // Form validation (keep what you already have)
-    if (!isValid) return;
-    
-    // Show loading state
-    const submitBtn = this.querySelector('button[type="submit"]');
-    const originalText = submitBtn.innerHTML;
-    submitBtn.innerHTML = '<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Processing...';
-    submitBtn.disabled = true;
-    
-    // Construct payload from form + quiz data
-    const formData = {
-      user: {
-        name: this.querySelector('input[name="name"]').value,
-        email: this.querySelector('input[name="email"]').value,
-        phone: this.querySelector('input[name="phone"]').value,
-        sport: userSelections.sport,
-        goal: userSelections.goal,
-        location: userSelections.location
-      }
-    };
-    
-    // Send to API
-    fetch('https://api.sportyfy.live/api/v1/waitlist', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(formData)
-    })
-    .then(response => response.json())
-    .then(data => {
-      // Display success message
-      this.innerHTML = `
-        <div class="form-success">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="success-icon">
-            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          <h3 class="success-title">ACCESS REQUEST SUBMITTED</h3>
-          <p class="success-message">Thank you, ${formData.user.name}. You're in the SPORTYFY revolution! We'll send updates to ${formData.user.email}.</p>
-        </div>
-      `;
-    })
-    .catch(error => {
-      // Handle error
-      submitBtn.innerHTML = originalText;
-      submitBtn.disabled = false;
-      
-      const errorMsg = document.createElement('div');
-      errorMsg.className = 'text-sporty-red text-sm mt-2 mb-4';
-      errorMsg.innerHTML = '⚠️ Something went wrong! Please try again.';
-      
-      this.querySelector('button[type="submit"]').parentNode.before(errorMsg);
-      
-      setTimeout(() => {
-        if (errorMsg.parentNode) {
-          errorMsg.parentNode.removeChild(errorMsg);
-        }
-      }, 3000);
-      
-      console.error('Error:', error);
-    });
-  });
+        // Replace your form submission handler with this CHAMPIONSHIP-LEVEL CODE
+        waitlistForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Define isValid and validate form fields
+            let isValid = true;
+            
+            // Get form values
+            const name = this.querySelector('input[name="name"]').value.trim();
+            const email = this.querySelector('input[name="email"]').value.trim();
+            const phone = this.querySelector('input[name="phone"]').value.trim();
+            
+            // Basic validation - like defense, NEVER SKIP THIS
+            if (!name || !email || !phone) {
+                isValid = false;
+                
+                // Show an error message with MAMBA INTENSITY
+                const errorMsg = document.createElement('div');
+                errorMsg.className = 'text-sporty-red text-sm mt-2 mb-4 font-bold';
+                errorMsg.innerHTML = '⚠️ SOFT! FILL OUT ALL FIELDS TO JOIN THE REVOLUTION!';
+                
+                this.querySelector('button[type="submit"]').parentNode.before(errorMsg);
+                
+                setTimeout(() => {
+                    if (errorMsg.parentNode) {
+                        errorMsg.parentNode.removeChild(errorMsg);
+                    }
+                }, 3000);
+            }
+            
+            // HERE'S THE FIX - Only proceed if validation passes
+            if (!isValid) return;
+            
+            // Continue with loading state and form submission
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Processing...';
+            submitBtn.disabled = true;
+            
+            // Rest of your existing code for API submission remains unchanged
+            const formData = {
+            user: {
+                name: name,
+                email: email,
+                phone: phone,
+                sport: userSelections.sport,
+                goal: userSelections.goal,
+                location: userSelections.location
+            }
+            };
+            
+            // Send to API
+            fetch('https://api.sportyfy.live/api/v1/waitlist', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+            // Display success message
+            this.innerHTML = `
+                <div class="form-success">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="success-icon">
+                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <h3 class="success-title">ACCESS REQUEST SUBMITTED</h3>
+                <p class="success-message">Thank you, ${formData.user.name}. You're in the SPORTYFY revolution! We'll send updates to ${formData.user.email}.</p>
+                </div>
+            `;
+            })
+            .catch(error => {
+            // Handle error
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+            
+            const errorMsg = document.createElement('div');
+            errorMsg.className = 'text-sporty-red text-sm mt-2 mb-4';
+            errorMsg.innerHTML = '⚠️ Something went wrong! Please try again.';
+            
+            this.querySelector('button[type="submit"]').parentNode.before(errorMsg);
+            
+            setTimeout(() => {
+                if (errorMsg.parentNode) {
+                errorMsg.parentNode.removeChild(errorMsg);
+                }
+            }, 3000);
+            
+            console.error('Error:', error);
+            });
+        });
     }
 
     // ==============================================
