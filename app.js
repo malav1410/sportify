@@ -40,6 +40,93 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     ];
 
+    // Add this to your app.js to show a demo recording capability
+function initializeStreamDemo() {
+    const demoBtn = document.getElementById('stream-demo-btn');
+    if (!demoBtn) return;
+    
+    demoBtn.addEventListener('click', function() {
+      // Check if browser supports getUserMedia
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        alert('Your browser does not support camera access!');
+        return;
+      }
+      
+      // Create video preview element
+      const videoContainer = document.createElement('div');
+      videoContainer.className = 'fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50';
+      videoContainer.innerHTML = `
+        <div class="relative bg-sporty-black p-6 rounded-lg max-w-2xl w-full">
+          <button class="absolute top-2 right-2 text-white text-xl" id="close-stream">&times;</button>
+          <h3 class="text-2xl font-bold text-center mb-4">SPORTYFY.LIVE STREAM DEMO</h3>
+          <video id="stream-preview" class="w-full aspect-video bg-black mb-4" autoplay muted></video>
+          <div class="flex justify-center space-x-4">
+            <button id="start-recording" class="bg-sporty-red text-white px-6 py-2 rounded">START RECORDING</button>
+            <button id="stop-recording" class="bg-gray-700 text-white px-6 py-2 rounded" disabled>STOP RECORDING</button>
+          </div>
+          <p class="text-gray-400 text-sm mt-4 text-center">This is a demo. Recordings are not saved yet.</p>
+        </div>
+      `;
+      
+      document.body.appendChild(videoContainer);
+      
+      // Get video element
+      const videoElement = document.getElementById('stream-preview');
+      const startRecordBtn = document.getElementById('start-recording');
+      const stopRecordBtn = document.getElementById('stop-recording');
+      const closeBtn = document.getElementById('close-stream');
+      
+      // Set up media stream
+      navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+        .then(stream => {
+          videoElement.srcObject = stream;
+          
+          // Handle recording
+          let mediaRecorder;
+          let recordedChunks = [];
+          
+          startRecordBtn.addEventListener('click', function() {
+            recordedChunks = [];
+            mediaRecorder = new MediaRecorder(stream);
+            
+            mediaRecorder.ondataavailable = function(e) {
+              if (e.data.size > 0) {
+                recordedChunks.push(e.data);
+              }
+            };
+            
+            mediaRecorder.onstop = function() {
+              // For demo, just show alert (this is where Cloudflare Stream API would be called)
+              alert('Recording complete! In the full version, this would be uploaded to SPORTYFY.LIVE.');
+              
+              // Reset buttons
+              startRecordBtn.disabled = false;
+              stopRecordBtn.disabled = true;
+            };
+            
+            mediaRecorder.start();
+            startRecordBtn.disabled = true;
+            stopRecordBtn.disabled = false;
+          });
+          
+          stopRecordBtn.addEventListener('click', function() {
+            mediaRecorder.stop();
+          });
+          
+          closeBtn.addEventListener('click', function() {
+            // Stop all tracks
+            stream.getTracks().forEach(track => track.stop());
+            videoContainer.remove();
+          });
+        })
+        .catch(err => {
+          console.error('Error accessing camera:', err);
+          alert('Could not access camera. Please check permissions.');
+          videoContainer.remove();
+        });
+    });
+  }
+
     function updateStep() {
         steps.forEach((step) => step.classList.add("hidden"));
         steps[currentStep - 1].classList.remove("hidden");
@@ -325,56 +412,72 @@ document.addEventListener('DOMContentLoaded', function() {
     // Form validation
     const waitlistForm = document.getElementById('waitlist-form');
     if (waitlistForm) {
-        waitlistForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Get form fields
-            const nameField = this.querySelector('input[name="name"]');
-            const emailField = this.querySelector('input[name="email"]');
-            const phoneField = this.querySelector('input[name="phone"]');
-            
-            // Validate
-            const isValid = 
-                nameField.value.trim() !== '' && 
-                emailField.value.trim() !== '' &&
-                phoneField.value.trim() !== '';
-            
-            if (isValid) {
-                // Form is valid, show success message
-                alert("🏆 You're on the SPORTYFY.LIVE waitlist! Get ready to broadcast your game and CLAIM YOUR FAME!");
-            } else {
-                // Highlight empty fields
-                [nameField, emailField, phoneField].forEach(field => {
-                    if (!field.value.trim()) {
-                        field.classList.add('border-sporty-red');
-                        
-                        // Remove highlight when user types
-                        field.addEventListener('input', function() {
-                            if (this.value.trim()) {
-                                this.classList.remove('border-sporty-red');
-                            }
-                        }, { once: true });
-                    }
-                });
-                
-                // Show error message
-                const errorMsg = document.createElement('div');
-                errorMsg.className = 'text-sporty-red text-sm mt-2 mb-4';
-                errorMsg.innerHTML = '⚠️ LEGENDS COMPLETE WHAT THEY START! Fill in all fields to secure your spot.';
-                
-                const submitBtn = this.querySelector('button[type="submit"]').parentNode;
-                if (!this.querySelector('.text-sporty-red')) {
-                    submitBtn.parentNode.insertBefore(errorMsg, submitBtn);
-                    
-                    // Remove error after 3 seconds
-                    setTimeout(() => {
-                        if (errorMsg.parentNode) {
-                            errorMsg.parentNode.removeChild(errorMsg);
-                        }
-                    }, 3000);
-                }
-            }
-        });
+        // Replace your form submission handler with this
+waitlistForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Form validation (keep what you already have)
+    if (!isValid) return;
+    
+    // Show loading state
+    const submitBtn = this.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Processing...';
+    submitBtn.disabled = true;
+    
+    // Construct payload from form + quiz data
+    const formData = {
+      user: {
+        name: this.querySelector('input[name="name"]').value,
+        email: this.querySelector('input[name="email"]').value,
+        phone: this.querySelector('input[name="phone"]').value,
+        sport: userSelections.sport,
+        goal: userSelections.goal,
+        location: userSelections.location
+      }
+    };
+    
+    // Send to API
+    fetch('https://api.sportyfy.live/api/v1/waitlist', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+      // Display success message
+      this.innerHTML = `
+        <div class="form-success">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="success-icon">
+            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <h3 class="success-title">ACCESS REQUEST SUBMITTED</h3>
+          <p class="success-message">Thank you, ${formData.user.name}. You're in the SPORTYFY revolution! We'll send updates to ${formData.user.email}.</p>
+        </div>
+      `;
+    })
+    .catch(error => {
+      // Handle error
+      submitBtn.innerHTML = originalText;
+      submitBtn.disabled = false;
+      
+      const errorMsg = document.createElement('div');
+      errorMsg.className = 'text-sporty-red text-sm mt-2 mb-4';
+      errorMsg.innerHTML = '⚠️ Something went wrong! Please try again.';
+      
+      this.querySelector('button[type="submit"]').parentNode.before(errorMsg);
+      
+      setTimeout(() => {
+        if (errorMsg.parentNode) {
+          errorMsg.parentNode.removeChild(errorMsg);
+        }
+      }, 3000);
+      
+      console.error('Error:', error);
+    });
+  });
     }
 
     // ==============================================
