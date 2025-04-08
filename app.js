@@ -465,7 +465,7 @@ function initializeStreamDemo() {
             };
             
             // Send to API
-            fetch('https://api.sportyfy.live/api/v1/waitlist', {
+            fetch('https://api.sportyfy.live/api/v1/waitlist/create', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
