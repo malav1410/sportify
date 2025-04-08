@@ -476,12 +476,12 @@ function initializeStreamDemo() {
             .then(data => {
             // Display success message
             this.innerHTML = `
-                <div class="form-success">
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="success-icon">
+                <div class="form-success md:col-span-2">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="success-icon">
                     <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                <h3 class="success-title">ACCESS REQUEST SUBMITTED</h3>
-                <p class="success-message">Thank you, ${formData.user.name}. You're in the SPORTYFY revolution! We'll send updates to ${formData.user.email}.</p>
+                    </svg>
+                    <h3 class="success-title">ACCESS REQUEST SUBMITTED</h3>
+                    <p class="success-message">Thank you, ${formData.user.name}. You're in the SPORTYFY revolution! We'll send updates to ${formData.user.email}.</p>
                 </div>
             `;
             })
