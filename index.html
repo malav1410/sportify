@@ -39,10 +39,30 @@
         },
       };
     </script>
+    <!-- Add these in your <head> section of index.html -->
+    <script src="https://www.gstatic.com/firebasejs/9.19.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.19.1/firebase-auth-compat.js"></script>
+
+    <script>
+      // Your web app's Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyCvbPp-kmuu9gCyFuLyhHDJVtkp36z8JzU",
+        authDomain: "sportyfy-live.firebaseapp.com",
+        projectId: "sportyfy-live",
+        storageBucket: "sportyfy-live.firebasestorage.app",
+        messagingSenderId: "291348993870",
+        appId: "1:291348993870:web:11c03d5faa378efff5f01f",
+        measurementId: "G-1FC6MNS2FY"
+      };
+      
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+    </script>
     <!-- Keep your existing style reference -->
     <link rel="stylesheet" href="./css/style.css">
     <!-- Add new styles -->
     <link rel="stylesheet" href="./css/streaming.css">
+    <link rel="stylesheet" href="./css/auth-modal.css">
     <link
       href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&display=swap"
       rel="stylesheet"
@@ -462,12 +482,12 @@
             class="text-white font-semibold hover:text-sporty-red transition"
             >SPORTS</a
           >
-          <span class="flex items-center">
+          <!-- <span class="flex items-center">
             <span
               class="h-3 w-3 bg-sporty-red rounded-full inline-block mr-2 live-dot"
             ></span>
             <span class="text-sporty-red font-bold">LIVE</span>
-          </span>
+          </span> -->
           <div class="flex space-x-4">
             <a
               href="#waitlist"
@@ -476,14 +496,14 @@
               <span>JOIN</span>
               <i class="fas fa-arrow-right ml-2"></i>
             </a>
-            <a
+            <!-- <a
               class="border-2 border-white px-3 py-1 text-white font-medium hover:bg-white hover:text-sporty-black transition"
               >EN</a
             >
             <a
               class="border-2 border-white px-3 py-1 text-white font-medium hover:bg-white hover:text-sporty-black transition"
               >ગુજરાતી</a
-            >
+            > -->
           </div>
         </div>
         <button class="md:hidden text-white text-2xl">
@@ -527,7 +547,7 @@
             </h2>
           </div>
           <h1
-            class="text-5xl md:text-7xl lg:text-8xl font-bold mb-4 leading-none tracking-tight"
+            class="text-5xl md:text-7xl lg:text-8xl font-bold mb-4 mt-4 leading-none tracking-tight"
           >
             <span class="block"
               >STREAM YOUR MATCH</span
@@ -1466,7 +1486,48 @@
         </div>
       </div>
     </footer>
+    <div id="recaptcha-container"></div>
+    <!-- Add this to your index.html before the closing body tag -->
+<div id="auth-modal" class="auth-modal hidden">
+  <div class="auth-container">
+    <button class="close-btn">&times;</button>
+    
+    <div class="tab-content active" id="login-tab">
+      <h2>GET IN THE GAME!</h2>
+      <form id="phone-auth-form">
+        <div class="form-group">
+          <label for="phone-number">Mobile Number</label>
+          <div class="phone-input-group">
+            <span class="country-code">+91</span>
+            <input type="tel" id="phone-number" pattern="[0-9]{10}" maxlength="10" required placeholder="10-digit number">
+          </div>
+        </div>
+        
+        <div id="send-otp-container">
+          <button type="button" id="send-otp-btn" class="auth-btn">GET OTP</button>
+        </div>
+        
+        <div id="verify-otp-container" class="hidden">
+          <div class="form-group">
+            <label for="otp-input">Enter OTP sent to your phone</label>
+            <input type="text" id="otp-input" pattern="[0-9]{6}" maxlength="6" required placeholder="6-digit OTP">
+          </div>
+          
+          <div class="resend-container">
+            <span id="timer-text">Resend OTP in <span id="timer">01:00</span></span>
+            <button type="button" id="resend-btn" class="link-btn hidden">Resend OTP</button>
+          </div>
+          
+          <button type="button" id="verify-otp-btn" class="auth-btn">VERIFY & CONTINUE</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
     <script src="./js/app.js"></script>
+    <script src="./js/auth/auth-modal.js"></script>
+    <script src="./js/auth/auth-handler.js"></script>
+    <script src="./js/auth/firebase-auth.js"></script>
     <script src="./js/streaming/stream-core.js"></script>
     <script src="./js/streaming/network-monitor.js"></script>
     <script src="./js/streaming/device-monitor.js"></script>
