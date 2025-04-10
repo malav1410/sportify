@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', function() {
           clearInterval(timer);
           
           // Get auth token from backend
-          const response = await fetch('/api/v1/firebase_auth', {
+          const response = await fetch('https://api.sportyfy.live/api/v1/firebase_auth', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
