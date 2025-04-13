@@ -1,4 +1,28 @@
 // auth-handler.js
+// Add near the top of auth-handler.js, before its first usage
+function showError(message) {
+    // Check if error element already exists
+    let errorEl = document.querySelector('.error-message');
+    
+    if (!errorEl) {
+      errorEl = document.createElement('div');
+      errorEl.className = 'error-message';
+      const formElement = document.getElementById('phone-auth-form');
+      if (formElement) {
+        formElement.prepend(errorEl);
+      }
+    }
+    
+    errorEl.textContent = message;
+    
+    // Remove after 3 seconds
+    setTimeout(() => {
+      if (errorEl.parentElement) {
+        errorEl.parentElement.removeChild(errorEl);
+      }
+    }, 3000);
+  }
+  
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize Firebase Auth
     FirebaseAuthService.init();

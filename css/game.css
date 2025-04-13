@@ -1,0 +1,290 @@
+/* SPORTYFY.LIVE Game Page Styles */
+
+/* Maintain visual consistency with main site while adding game-specific styles */
+
+/* ==================== CORE EXPERIENCE ELEMENTS ==================== */
+
+/* Upload Container Styling */
+#upload-container {
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  #upload-container:hover {
+    background-color: rgba(255, 0, 0, 0.05);
+  }
+  
+  #upload-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, rgba(255, 0, 0, 0.1) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+  
+  #upload-container:hover::before {
+    opacity: 1;
+  }
+  
+  /* Upload Progress Styling */
+  #upload-progress {
+    animation: fadeIn 0.3s ease;
+  }
+  
+  #progress-bar {
+    transition: width 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  #progress-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+      rgba(255, 0, 0, 0.5) 0%, 
+      rgba(255, 0, 0, 0.8) 50%, 
+      rgba(255, 0, 0, 0.5) 100%);
+    background-size: 200% 100%;
+    animation: progressShimmer 2s infinite linear;
+  }
+  
+  @keyframes progressShimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: 0 0; }
+  }
+  
+  /* Processing Area Styling */
+  #processing-area {
+    animation: fadeIn 0.5s ease;
+  }
+  
+  /* Pulsing animation for processing indicators */
+  .animate-pulse {
+    animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+  
+  /* Processing stages transition */
+  #processing-area .flex {
+    transition: all 0.3s ease;
+  }
+  
+  /* Results Area Styling */
+  #results-area {
+    animation: fadeIn 0.5s ease;
+  }
+  
+  /* Highlight video player styling */
+  #highlight-player {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+  
+  #highlight-player:hover {
+    transform: scale(1.01);
+  }
+  
+  /* Highlight markers timeline */
+  #highlight-markers {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  #highlight-markers::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right, 
+      rgba(255, 0, 0, 0.1) 0%, 
+      transparent 20%, 
+      transparent 80%, 
+      rgba(255, 0, 0, 0.1) 100%);
+    pointer-events: none;
+  }
+  
+  /* Individual highlight markers */
+  #marker-container div {
+    transition: all 0.2s ease;
+    z-index: 10;
+  }
+  
+  #marker-container div:hover {
+    background-color: #FF3A3A;
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+  }
+  
+  /* Highlight marker tooltip */
+  #marker-container div::after {
+    content: attr(title);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-5px);
+    background-color: #FF0000;
+    color: white;
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+    pointer-events: none;
+  }
+  
+  #marker-container div:hover::after {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+  }
+  
+  /* Action buttons styling */
+  #download-highlights, #share-highlights, #new-upload {
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  #download-highlights::before, #share-highlights::before, #new-upload::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.6s ease, height 0.6s ease;
+  }
+  
+  #download-highlights:hover::before, #share-highlights:hover::before, #new-upload:hover::before {
+    width: 300px;
+    height: 300px;
+  }
+  
+  /* Error and success toasts */
+  .error-toast, .success-toast {
+    border-radius: 4px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    animation: slideUp 0.3s ease forwards;
+  }
+  
+  @keyframes slideUp {
+    from {
+      transform: translateX(-50%) translateY(20px);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+  }
+  
+  /* ==================== ANIMATION UTILITIES ==================== */
+  
+  /* Fade in animation */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  /* Transition utilities */
+  .transition-all {
+    transition: all 0.3s ease;
+  }
+  
+  /* ==================== MEDIA QUERIES ==================== */
+  
+  /* Mobile optimization */
+  @media (max-width: 768px) {
+    #upload-container {
+      padding: 1.5rem;
+    }
+    
+    .flex-wrap {
+      justify-content: center;
+    }
+    
+    #highlight-markers {
+      height: 12px;
+    }
+    
+    #marker-container div {
+      width: 2px;
+    }
+    
+    #marker-container div::after {
+      font-size: 0.65rem;
+      padding: 0.2rem 0.4rem;
+    }
+  }
+  
+  /* ==================== SPECIAL EFFECTS ==================== */
+  
+  /* Glitch effect for feature highlights */
+  .glitch-highlight {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .glitch-highlight::before,
+  .glitch-highlight::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+  
+  .glitch-highlight::before {
+    left: 2px;
+    text-shadow: -1px 0 #FF1744;
+    clip: rect(44px, 450px, 56px, 0);
+    animation: glitch-anim 5s infinite linear alternate-reverse;
+  }
+  
+  .glitch-highlight::after {
+    left: -2px;
+    text-shadow: -1px 0 #FF1744;
+    clip: rect(44px, 450px, 56px, 0);
+    animation: glitch-anim2 5s infinite linear alternate-reverse;
+  }
+  
+  /* AI scanning effect for processing area */
+  .ai-scanning::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background-color: rgba(12, 255, 127, 0.5);
+    box-shadow: 0 0 10px rgba(12, 255, 127, 0.5), 0 0 20px rgba(12, 255, 127, 0.3);
+    animation: scan 3s ease-in-out infinite;
+    z-index: 5;
+  }
+  
+  @keyframes scan {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(100%); }
+  }
