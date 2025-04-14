@@ -24,6 +24,20 @@ document.addEventListener('DOMContentLoaded', function() {
     function hideAuthModal() {
       authModal.classList.remove('show');
       document.body.style.overflow = ''; // Re-enable scrolling
+
+      // Reset form state
+        const phoneNumberInput = document.getElementById('phone-number');
+        const otpInput = document.getElementById('otp-input');
+        const verifyOtpContainer = document.getElementById('verify-otp-container');
+        const sendOtpContainer = document.getElementById('send-otp-container');
+        
+        // Clear inputs
+        if (phoneNumberInput) phoneNumberInput.value = '';
+        if (otpInput) otpInput.value = '';
+        
+        // Reset containers
+        if (sendOtpContainer) sendOtpContainer.classList.remove('hidden');
+        if (verifyOtpContainer) verifyOtpContainer.classList.add('hidden');
     }
     
     // Close button

@@ -22,7 +22,7 @@ function showError(message) {
       }
     }, 3000);
   }
-  
+
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize Firebase Auth
     FirebaseAuthService.init();
@@ -114,7 +114,8 @@ document.addEventListener('DOMContentLoaded', function() {
             localStorage.setItem('sportyfy_user', JSON.stringify(data.user));
             
             // Close modal
-            closeAuthModal();
+            hideAuthModal();
+            // closeAuthModal();
             
             // Show success message
             showSuccessToast(data.is_new ? 
