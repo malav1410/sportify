@@ -13,7 +13,7 @@ const CloudflareUpload = (function() {
           throw new Error('Authentication required');
         }
 
-        const urlResponse = await fetch('/api/v1/cloudflare/signed_upload_url', {
+        const urlResponse = await fetch('https://api.sportyfy.live/api/v1/cloudflare/signed_upload_url', {
             method: 'GET',
             headers: {
               'Authorization': `Bearer ${token}`
@@ -49,7 +49,7 @@ const CloudflareUpload = (function() {
                     const result = JSON.parse(xhr.responseText);
                     
                     // Step 3: Notify your backend about the successful upload
-                    const notifyResponse = await fetch('/api/v1/cloudflare/upload_complete', {
+                    const notifyResponse = await fetch('https://api.sportyfy.live/api/v1/cloudflare/upload_complete', {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`,
