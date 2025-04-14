@@ -1,88 +1,69 @@
-// game/js/highlight-detection.js
+// Create or update: js/game/highlight-detection.js
 
-// Highlight Detection System for SPORTYFY.LIVE
-// This simulates AI detection for demo purposes
-// In production, this would be a server-side API call to your ML service
-
-const highlightDetection = (function() {
-    // Configuration
-    const config = {
-      // Min duration of highlight segment in seconds
-      minHighlightDuration: 3,
-      // Max duration of highlight segment in seconds
-      maxHighlightDuration: 15,
-      // Threshold for motion detection (0-1)
-      motionThreshold: 0.25,
-      // Threshold for audio detection (0-1)
-      audioThreshold: 0.6,
-      // Number of frames to analyze per second
-      samplingRate: 2
-    };
+const HighlightDetection = (function() {
+    // API endpoint for processing
+    const HIGHLIGHT_API_URL = 'https://api.sportyfy.live/api/v1/cloudflare/process';
     
-    /**
-     * Process video for highlight detection
-     * In production this would call your backend AI system
-     * For demo, we'll simulate the processing
-     * @param {string} videoId - Cloudflare Stream video ID
-     * @returns {Promise<Array>} - Array of highlight segments
-     */
+    // Process video for highlights
     async function processVideo(videoId) {
-      console.log('Processing video for highlights:', videoId);
-      
-      return new Promise((resolve, reject) => {
-        // Simulate API call processing time
-        setTimeout(() => {
-          try {
-            // For demo purposes, generate random highlights
-            const highlights = generateSimulatedHighlights();
-            resolve(highlights);
-          } catch (error) {
-            reject(error);
+      try {
+        // Get authentication token
+        const token = localStorage.getItem('sportyfy_token');
+        if (!token) {
+          throw new Error('Authentication required');
+        }
+        
+        // Call API to process video
+        const response = await fetch(`${HIGHLIGHT_API_URL}/${videoId}`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
           }
-        }, 5000); // Simulate 5 second processing time
-      });
+        });
+        
+        if (!response.ok) {
+          throw new Error(`Processing failed: ${response.status} ${response.statusText}`);
+        }
+        
+        return await response.json();
+      } catch (error) {
+        console.error('Highlight detection error:', error);
+        throw error;
+      }
     }
     
-    /**
-     * Generate simulated highlights for demo
-     * @returns {Array} - Array of highlight objects
-     */
-    function generateSimulatedHighlights() {
-      // For demo, create 3-6 random highlights
-      const numHighlights = Math.floor(Math.random() * 4) + 3;
+    // For development/demo purposes, generate fake highlights
+    function generateDemoHighlights(duration) {
+      const count = Math.floor(Math.random() * 5) + 3; // 3-7 highlights
       const highlights = [];
       
-      for (let i = 0; i < numHighlights; i++) {
-        // Generate random timestamp between 5% and 95% of video
-        const position = Math.random() * 0.9 + 0.05;
+      for (let i = 0; i < count; i++) {
+        // Generate random timestamp (5-95% of video)
+        const position = (Math.random() * 0.9 + 0.05) * duration;
+        
         highlights.push({
           id: i + 1,
-          position: position,
-          duration: Math.random() * 4 + 3, // 3-7 seconds
+          start_time: position,
+          duration: Math.random() * 10 + 5, // 5-15 second highlight
           label: getRandomHighlightLabel(),
-          score: Math.random() * 0.3 + 0.7 // 0.7-1.0 confidence score
+          confidence: Math.random() * 0.3 + 0.7 // 0.7-1.0 confidence score
         });
       }
       
-      // Sort by position in video
-      highlights.sort((a, b) => a.position - b.position);
-      
-      return highlights;
+      // Sort by start time
+      return highlights.sort((a, b) => a.start_time - b.start_time);
     }
     
-    /**
-     * Get random highlight label for demo
-     * @returns {string} - Descriptive label
-     */
+    // Generate random label for demo
     function getRandomHighlightLabel() {
-      // Sport-specific labels could be used based on detected sport
       const labels = [
         'Key Moment',
-        'Great Play',
+        'Great Shot',
         'Skill Move',
-        'Team Action',
-        'Defensive Play',
-        'Scoring Opportunity'
+        'Team Play',
+        'Defensive Action',
+        'Crowd Excitement'
       ];
       
       return labels[Math.floor(Math.random() * labels.length)];
@@ -90,9 +71,7 @@ const highlightDetection = (function() {
     
     // Public API
     return {
-      processVideo
+      processVideo,
+      generateDemoHighlights
     };
   })();
-  
-  // Make available globally
-  window.highlightDetection = highlightDetection;

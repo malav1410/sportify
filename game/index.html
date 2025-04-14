@@ -769,6 +769,18 @@
               }
             });
           }
+
+          if (typeof AuthService !== 'undefined') {
+                AuthService.initialize();
+                // Force UI update
+                if (typeof updateAuthState === 'function') {
+                    updateAuthState();
+                }
+            }
+
+            if (typeof AppController !== 'undefined') {
+                AppController.initialize();
+            }
         });
       </script>
 
@@ -776,7 +788,9 @@
     <script src="../js/auth/firebase-auth.js"></script>
     <script src="../js/auth/auth-service.js"></script>
     <script src="../js/auth/auth-ui.js"></script>
-    <script src="../js/game/cloudflare-stream.js"></script>
+    <script src="../js/game/cloudflare-stream.js"></script>    
+    <script src="../js/game/cloudflare-upload.js"></script>
     <script src="../js/game/highlight-detection.js"></script>
+    <script src="../js/game/app-controller.js"></script>
   </body>
 </html>

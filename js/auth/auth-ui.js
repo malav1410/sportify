@@ -248,7 +248,7 @@
     // Update authentication state UI
     function updateAuthState() {
       const user = AuthService.getCurrentUser();
-      const navLinks = document.querySelector('.main-nav');
+      const navLinks = document.querySelector('.md\\:flex.space-x-8');
       
       // Skip if nav not found
       if (!navLinks) return;
