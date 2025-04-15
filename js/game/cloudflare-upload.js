@@ -6,6 +6,7 @@ const CloudflareUpload = (function() {
     
     // Handle file upload to Cloudflare
     async function uploadVideo(file, onProgress) {
+      console.log('Starting upload via CloudflareUpload module');
       try {
         // Get authentication token
         const token = localStorage.getItem('sportyfy_token');

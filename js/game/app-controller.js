@@ -14,6 +14,9 @@ const AppController = (function() {
     
     // Initialize the app
     function initialize() {
+
+      if (window.appInitialized) return;
+      window.appInitialized = true;
       // Get DOM elements
       elements = {
         uploadArea: document.getElementById('upload-area'),
@@ -85,12 +88,18 @@ const AppController = (function() {
     }
     
     // Trigger file input click
-    function triggerFileInput() {
+    function triggerFileInput(e) {
+      console.log('Trigger file input called');
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
       elements.videoInput.click();
     }
     
     // Handle file select from input
     function handleFileSelect(e) {
+      console.log('File selected via input element');
       if (e.target.files.length) {
         processFile(e.target.files[0]);
       }
