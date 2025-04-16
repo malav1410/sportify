@@ -536,7 +536,6 @@
           </div>
         </div>
 
-        <!-- Logged in state - initially hidden, shown after auth -->
         <div id="app-state" class="max-w-4xl mx-auto py-8 hidden">
           <h1 class="text-4xl font-bold mb-4 text-center">
             AI <span class="text-sporty-red">HIGHLIGHT</span> DETECTION
@@ -545,17 +544,20 @@
             Upload your game footage and our AI will automatically detect and create your highlight reel.
           </p>
           
-          <!-- Upload area -->
+          <!-- Upload area - CRITICAL CHANGES HERE -->
           <div id="upload-area" class="bg-sporty-black p-8 rounded-lg border-2 border-gray-800 mb-8">
             <div class="text-center mb-6">
               <h3 class="text-2xl font-bold mb-2">UPLOAD YOUR GAME FOOTAGE</h3>
               <p class="text-gray-400">Supported formats: MP4, MOV, AVI (Max 500MB)</p>
             </div>
             
-            <div id="upload-container" class="border-2 border-dashed border-gray-600 rounded-lg p-8 text-center cursor-pointer hover:border-sporty-red transition-colors">
+            <!-- Modified structure: Important to remove onclick from container -->
+            <div id="upload-container" class="border-2 border-dashed border-gray-600 rounded-lg p-8 text-center hover:border-sporty-red transition-colors">
               <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
               <p class="text-xl font-bold mb-2">Drag & Drop your video here</p>
               <p class="text-gray-400 mb-4">or</p>
+              
+              <!-- Critical fix: Ensure label and input are properly connected -->
               <label for="video-upload" class="bg-sporty-red text-white px-6 py-3 rounded-lg font-bold inline-block cursor-pointer hover:bg-red-700 transition">
                 SELECT VIDEO
               </label>
@@ -794,21 +796,32 @@
     <script src="../js/game/app-controller.js"></script>
 
     <script defer>
+      // Enhanced initialization with proper sequencing and error handling
       document.addEventListener('DOMContentLoaded', function() {
-        console.log("DOM ready, initializing application...");
+        console.log("DOM fully loaded, initializing application...");
         
-        // Initialize auth first
-        if (typeof AuthService !== 'undefined') {
-          AuthService.initialize();
-        }
-        
-        // Wait a moment to ensure DOM is fully ready
-        setTimeout(() => {
-          // Then initialize app controller
-          if (typeof AppController !== 'undefined') {
-            AppController.initialize();
+        try {
+          // Initialize auth first with error handling
+          if (typeof AuthService !== 'undefined') {
+            AuthService.initialize();
+            console.log("Auth service initialized successfully");
+          } else {
+            console.warn("AuthService not available - authentication may not work");
           }
-        }, 100);
+          
+          // Initialize app controller with slight delay to ensure DOM is ready
+          setTimeout(() => {
+            if (typeof AppController !== 'undefined') {
+              console.log("Initializing AppController...");
+              AppController.initialize();
+              window.appInitialized = true;
+            } else {
+              console.error("AppController not found - core functionality may not work");
+            }
+          }, 200); // Increased delay for better reliability
+        } catch (err) {
+          console.error("Error during initialization:", err);
+        }
       });
     </script>
   </body>

@@ -1,6 +1,6 @@
-// app-controller.js
+// app-controller.js - Reimagined for optimal performance and reliability
 const AppController = (function() {
-  // State
+  // State management with enhanced structure
   let currentVideo = {
     file: null,
     videoId: null,
@@ -8,22 +8,36 @@ const AppController = (function() {
     player: null
   };
   
-  // DOM Elements
+  // DOM Elements with robust initialization
   let elements = {};
   let isInitialized = false;
   
-  // Initialize the app
+  // Fully-optimized app initialization
   function initialize() {
-    // Prevent multiple initialization
+    // Prevent redundant initialization
     if (isInitialized) {
       console.log("AppController already initialized. Skipping.");
       return;
     }
     
-    console.log("Initializing AppController");
+    console.log("Initializing AppController with enhanced reliability");
     isInitialized = true;
 
-    // Get DOM elements
+    // DOM elements acquisition with comprehensive mapping
+    cacheElementReferences();
+    
+    // Debug diagnostics
+    logElementStatus();
+    
+    // Robust event handling setup
+    setupEventListeners();
+    
+    // Add supplementary components
+    addSupportComponents();
+  }
+  
+  // Comprehensive DOM element caching
+  function cacheElementReferences() {
     elements = {
       uploadArea: document.getElementById('upload-area'),
       processingArea: document.getElementById('processing-area'),
@@ -40,42 +54,84 @@ const AppController = (function() {
       markerContainer: document.getElementById('marker-container'),
       downloadBtn: document.getElementById('download-highlights'),
       shareBtn: document.getElementById('share-highlights'),
-      newUploadBtn: document.getElementById('new-upload')
+      newUploadBtn: document.getElementById('new-upload'),
+      // Critical: Reference the specific button for file selection
+      selectVideoBtn: document.querySelector('label[for="video-upload"]')
     };
-
-    // Debug logging
+  }
+  
+  // Enhanced debugging for initialization issues
+  function logElementStatus() {
     console.log("Upload elements found:", {
       uploadArea: !!elements.uploadArea,
       uploadContainer: !!elements.uploadContainer,
-      videoInput: !!elements.videoInput
+      videoInput: !!elements.videoInput,
+      selectVideoBtn: !!elements.selectVideoBtn
     });
+  }
+  
+  // Comprehensive event listener setup with proper isolation
+  function setupEventListeners() {
+    // Remove existing event handlers to prevent duplicates
+    cleanupExistingEventListeners();
     
-    // Remove any existing event listeners before adding new ones
+    // Set up drag and drop handlers
+    setupDragDropHandlers();
+    
+    // *** KEY FIX: Direct file selection handlers - isolated from container ***
+    setupFileSelectionHandlers();
+    
+    // Action button handlers
+    setupActionButtonHandlers();
+  }
+  
+  // Clean up existing event handlers to prevent duplication
+  function cleanupExistingEventListeners() {
     if (elements.uploadContainer) {
       const newContainer = elements.uploadContainer.cloneNode(true);
       if (elements.uploadContainer.parentNode) {
         elements.uploadContainer.parentNode.replaceChild(newContainer, elements.uploadContainer);
       }
       elements.uploadContainer = newContainer;
+      
+      // Re-acquire the select button reference after DOM replacement
+      elements.selectVideoBtn = elements.uploadContainer.querySelector('label[for="video-upload"]');
     }
-    
-    // Register event listeners
+  }
+  
+  // Setup drag and drop functionality
+  function setupDragDropHandlers() {
     if (elements.uploadContainer) {
       elements.uploadContainer.addEventListener('dragover', handleDragOver);
       elements.uploadContainer.addEventListener('dragleave', handleDragLeave);
       elements.uploadContainer.addEventListener('drop', handleDrop);
-      
-      // Use direct onclick instead of addEventListener for better compatibility
-      elements.uploadContainer.onclick = handleUploadClick;
-      console.log("Click handler attached to upload container");
+    }
+  }
+  
+  // *** CRITICAL FIX: Properly isolated file selection handlers ***
+  function setupFileSelectionHandlers() {
+    // Important: Don't attach click handler to container
+    // Instead, let the label's native behavior handle the file input click
+    
+    // Only handle clicks on the SELECT VIDEO button
+    if (elements.selectVideoBtn) {
+      console.log("Select button found, ready for file selection");
+      // No need to add click handler - HTML label already handles this correctly
+    } else {
+      console.warn("Select button not found - file selection may not work");
     }
     
+    // Set up the file input change handler
     if (elements.videoInput) {
       // Reset file input first to clear any previous selections
       elements.videoInput.value = '';
       elements.videoInput.addEventListener('change', handleFileSelect);
+      console.log("File input change handler attached");
     }
-    
+  }
+  
+  // Setup action button event handlers
+  function setupActionButtonHandlers() {
     if (elements.newUploadBtn) {
       elements.newUploadBtn.addEventListener('click', resetApp);
     }
@@ -87,41 +143,44 @@ const AppController = (function() {
     if (elements.shareBtn) {
       elements.shareBtn.addEventListener('click', shareHighlights);
     }
-    
-    // Add direct upload button as fallback
+  }
+  
+  // Add supportive components
+  function addSupportComponents() {
+    // Direct upload button as fallback - more reliable than container click
     addDirectUploadButton();
   }
   
-  // Add a direct upload button for better reliability
+  // Add a reliable direct upload button
   function addDirectUploadButton() {
     if (!elements.uploadContainer) return;
     
+    // Check if the button already exists to avoid duplicates
+    if (document.getElementById('direct-upload-btn')) return;
+    
     const directBtn = document.createElement('button');
     directBtn.id = 'direct-upload-btn';
-    directBtn.innerHTML = 'FALLBACK UPLOAD';
+    directBtn.innerHTML = 'ALTERNATIVE UPLOAD';
     directBtn.className = 'bg-gray-700 text-white px-4 py-2 rounded-lg font-bold mt-4 hover:bg-gray-600 transition';
     directBtn.onclick = function(e) {
       e.preventDefault();
       e.stopPropagation();
+      console.log("Direct upload button clicked");
       if (elements.videoInput) {
         elements.videoInput.click();
       }
     };
     
     // Insert after the "SELECT VIDEO" button
-    const selectButton = elements.uploadContainer.querySelector('label');
-    if (selectButton && selectButton.parentNode) {
-      selectButton.parentNode.appendChild(directBtn);
+    if (elements.selectVideoBtn && elements.selectVideoBtn.parentNode) {
+      elements.selectVideoBtn.parentNode.appendChild(directBtn);
+    } else {
+      // Fallback - append to container
+      elements.uploadContainer.appendChild(directBtn);
     }
   }
   
-  // Handle upload container click
-  function handleUploadClick(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    console.log("Upload container clicked");
-    triggerFileInput();
-  }
+  // *** REMOVED: handleUploadClick - this was causing the duplicate events ***
   
   // Handle drag over event
   function handleDragOver(e) {
@@ -148,28 +207,11 @@ const AppController = (function() {
     }
   }
   
-  // Trigger file input click
-  function triggerFileInput() {
-    console.log('Trigger file input called');
-    
-    // Make sure element exists
-    if (!elements.videoInput) {
-      console.error("Video input element not found!");
-      return;
-    }
-
-    // Reset input first to ensure change event fires
-    elements.videoInput.value = '';
-    
-    // Use setTimeout to prevent event handling issues
-    setTimeout(() => {
-      elements.videoInput.click();
-    }, 50);
-  }
+  // *** REMOVED: triggerFileInput - no longer needed ***
   
   // Handle file select from input
   function handleFileSelect(e) {
-    console.log("File selected event triggered");
+    console.log("File selected event triggered", e);
     
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
@@ -180,6 +222,7 @@ const AppController = (function() {
     }
   }
   
+  // Rest of your app functionality remains the same
   // Process uploaded file
   function processFile(file) {
     // Validate file is video
