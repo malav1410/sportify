@@ -1,4 +1,5 @@
 // app-controller.js - Reimagined for optimal performance and reliability
+// New file updates
 const AppController = (function() {
   // State management with enhanced structure
   let currentVideo = {
