@@ -781,8 +781,8 @@
                 }
             }
 
-            if (!window.appInitialized && typeof AppController !== 'undefined') {
-              AppController.initialize();
+            if (!window.appInitialized && typeof GameAppController !== 'undefined') {
+              GameAppController.initialize();
             }
         });
       </script>
@@ -793,7 +793,7 @@
     <script src="../js/auth/auth-ui.js"></script>
     <script src="../js/game/cloudflare-upload.js"></script>    
     <script src="../js/game/highlight-detection.js"></script>
-    <script src="../js/game/app-controller.js"></script>
+    <script src="../js/game/gameapp-controller.js"></script>
 
     <script defer>
       // Enhanced initialization with proper sequencing and error handling
@@ -811,12 +811,12 @@
           
           // Initialize app controller with slight delay to ensure DOM is ready
           setTimeout(() => {
-            if (typeof AppController !== 'undefined') {
-              console.log("Initializing AppController...");
-              AppController.initialize();
+            if (typeof GameAppController !== 'undefined') {
+              console.log("Initializing GameAppController...");
+              GameAppController.initialize();
               window.appInitialized = true;
             } else {
-              console.error("AppController not found - core functionality may not work");
+              console.error("GameAppController not found - core functionality may not work");
             }
           }, 200); // Increased delay for better reliability
         } catch (err) {
