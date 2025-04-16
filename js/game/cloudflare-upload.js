@@ -1,100 +1,120 @@
-// Create new file: js/game/cloudflare-upload.js
-
+// Modified CloudflareUpload module with direct upload strategy
 const CloudflareUpload = (function() {
-    // Cloudflare Stream API endpoint
-    const CF_UPLOAD_URL = 'https://api.sportyfy.live/api/v1/cloudflare/upload';
-    
-    // Handle file upload to Cloudflare
-    async function uploadVideo(file, onProgress) {
-      console.log('Starting upload via CloudflareUpload module');
-      try {
-        // Get authentication token
-        const token = localStorage.getItem('sportyfy_token');
-        if (!token) {
-          throw new Error('Authentication required');
+  async function uploadVideo(file, onProgress) {
+    console.log('Starting direct Cloudflare upload integration');
+    try {
+      // 1. Get authentication token from your session
+      const token = localStorage.getItem('sportyfy_token');
+      if (!token) {
+        throw new Error('Authentication required');
+      }
+
+      // 2. Get a signed upload URL from your backend
+      console.log('Requesting signed upload URL from backend...');
+      const urlResponse = await fetch('https://api.sportyfy.live/api/v1/cloudflare/signed_upload_url', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`
         }
+      });
 
-        const urlResponse = await fetch('https://api.sportyfy.live/api/v1/cloudflare/signed_upload_url', {
-            method: 'GET',
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          });
-
-          if (!urlResponse.ok) {
-            throw new Error('Failed to get upload URL');
-          }
-          
-          const { uploadUrl, token: uploadToken } = await urlResponse.json();
+      if (!urlResponse.ok) {
+        throw new Error(`Failed to get upload URL: ${await urlResponse.text()}`);
+      }
+      
+      const { uploadUrl } = await urlResponse.json();
+      console.log('Received signed upload URL', uploadUrl);
+      
+      // 3. Upload directly to Cloudflare using TUS protocol
+      console.log('Preparing direct upload to Cloudflare...');
+      
+      return new Promise((resolve, reject) => {
+        // Create a standard form for Cloudflare
+        const formData = new FormData();
+        formData.append('file', file);
         
-        // Step 2: Upload directly to Cloudflare using the signed URL
-            const formData = new FormData();
-            formData.append('file', file);
-            
-            return new Promise((resolve, reject) => {
-            const xhr = new XMLHttpRequest();
-            
-            // Track upload progress
-            xhr.upload.addEventListener('progress', (event) => {
-                if (event.lengthComputable) {
-                const percentComplete = Math.round((event.loaded / event.total) * 100);
-                if (typeof onProgress === 'function') {
-                    onProgress(percentComplete);
+        const xhr = new XMLHttpRequest();
+        
+        // Track upload progress
+        xhr.upload.addEventListener('progress', (event) => {
+          if (event.lengthComputable) {
+            const percentComplete = Math.round((event.loaded / event.total) * 100);
+            if (typeof onProgress === 'function') {
+              onProgress(percentComplete);
+            }
+          }
+        });
+        
+        xhr.addEventListener('load', async function() {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            try {
+              const result = JSON.parse(xhr.responseText);
+              console.log('Upload to Cloudflare successful:', result);
+              
+              // 4. Notify your backend about the successful upload
+              try {
+                const notifyResponse = await fetch('https://api.sportyfy.live/api/v1/cloudflare/upload_complete', {
+                  method: 'POST',
+                  headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({
+                    videoId: result.uid || result.id,
+                    filename: file.name
+                  })
+                });
+                
+                if (!notifyResponse.ok) {
+                  console.warn('Backend notification failed, but upload was successful');
                 }
-                }
-            });
-            
-            xhr.addEventListener('load', async () => {
-                if (xhr.status >= 200 && xhr.status < 300) {
-                try {
-                    const result = JSON.parse(xhr.responseText);
-                    
-                    // Step 3: Notify your backend about the successful upload
-                    const notifyResponse = await fetch('https://api.sportyfy.live/api/v1/cloudflare/upload_complete', {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ 
-                        videoId: result.uid,
-                        filename: file.name
-                    })
-                    });
-                    
-                    if (!notifyResponse.ok) {
-                    console.warn('Failed to notify server about upload completion');
-                    }
-                    
-                    resolve(result);
-                } catch (e) {
-                    reject(new Error('Invalid response from server'));
-                }
-                } else {
-                reject(new Error(`Upload failed: ${xhr.status} ${xhr.statusText}`));
-                }
-            });
-            
-            // Error and abort handlers
-            xhr.addEventListener('error', () => reject(new Error('Network error during upload')));
-            xhr.addEventListener('abort', () => reject(new Error('Upload aborted')));
-            
-            // Send the upload request with the signed URL
-            xhr.open('POST', uploadUrl);
-            
-            // Add necessary headers provided by your backend
-            xhr.setRequestHeader('X-Auth-Token', uploadToken);
-            
-            xhr.send(formData);
-            });
-        } catch (error) {
-            console.error('Upload initialization error:', error);
-            throw error;
-        }
+                
+                const recordData = await notifyResponse.json();
+                console.log('Backend record created:', recordData);
+                
+                resolve({
+                  videoId: result.uid || result.id,
+                  ...result
+                });
+              } catch (notifyError) {
+                console.warn('Backend notification error:', notifyError);
+                // Still resolve with the upload data since Cloudflare has the video
+                resolve({
+                  videoId: result.uid || result.id,
+                  ...result
+                });
+              }
+            } catch (parseError) {
+              console.error('Error parsing Cloudflare response:', xhr.responseText);
+              reject(new Error('Invalid response from Cloudflare'));
+            }
+          } else {
+            console.error('Cloudflare upload failed:', xhr.status, xhr.statusText, xhr.responseText);
+            reject(new Error(`Upload failed: ${xhr.status} ${xhr.statusText}`));
+          }
+        });
+        
+        xhr.addEventListener('error', () => {
+          console.error('Network error during Cloudflare upload');
+          reject(new Error('Network error during upload'));
+        });
+        
+        xhr.addEventListener('abort', () => {
+          console.error('Upload aborted');
+          reject(new Error('Upload aborted'));
+        });
+        
+        // Send direct to Cloudflare
+        xhr.open('POST', uploadUrl);
+        xhr.send(formData);
+      });
+    } catch (error) {
+      console.error('Upload infrastructure error:', error);
+      throw error;
     }
-    
-    // Public API
-    return {
-      uploadVideo
-    };
-  })();
+  }
+  
+  return {
+    uploadVideo
+  };
+})();
