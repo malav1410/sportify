@@ -74,23 +74,26 @@ const CloudflareUpload = (function() {
                 
                 resolve({
                   videoId: result.uid || result.id,
-                  ...result
+                  streamId: responseData.streamId
                 });
               } catch (notifyError) {
                 console.warn('Backend notification error:', notifyError);
                 // Still resolve with the upload data since Cloudflare has the video
-                resolve({
-                  videoId: result.uid || result.id,
-                  ...result
-                });
+                resolve({ videoId: result.uid || result.id });
               }
             } catch (parseError) {
               console.error('Error parsing Cloudflare response:', xhr.responseText);
               reject(new Error('Invalid response from Cloudflare'));
             }
           } else {
-            console.error('Cloudflare upload failed:', xhr.status, xhr.statusText, xhr.responseText);
-            reject(new Error(`Upload failed: ${xhr.status} ${xhr.statusText}`));
+            try {
+              const errorResponse = JSON.parse(xhr.responseText);
+              console.error('Cloudflare upload failed:', errorResponse);
+              reject(new Error(`Upload failed: ${errorResponse.errors?.[0]?.message || xhr.statusText}`));
+            } catch (e) {
+              console.error('Cloudflare upload failed:', xhr.status, xhr.statusText);
+              reject(new Error(`Upload failed: ${xhr.status} ${xhr.statusText}`));
+            }
           }
         });
         
@@ -104,7 +107,7 @@ const CloudflareUpload = (function() {
           reject(new Error('Upload aborted'));
         });
         
-        // Send direct to Cloudflare
+        console.log('Sending file directly to Cloudflare...');
         xhr.open('POST', uploadUrl);
         xhr.send(formData);
       });

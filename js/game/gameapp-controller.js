@@ -248,74 +248,104 @@ const GameAppController = (function() {
       uploadVideo(file);
     }
     
-    // Upload video to backend
+    // // Upload video to backend
+    // async function uploadVideo(file) {
+    //   try {
+    //     console.log("Starting upload for file:", file.name);
+        
+    //     // Create FormData
+    //     const formData = new FormData();
+    //     formData.append('video', file);
+        
+    //     // Create XHR for progress tracking
+    //     const xhr = new XMLHttpRequest();
+    //     const token = localStorage.getItem('sportyfy_token');
+        
+    //     if (!token) {
+    //       throw new Error('Authentication required. Please log in again.');
+    //     }
+        
+    //     // Progress tracking
+    //     xhr.upload.addEventListener('progress', (event) => {
+    //       if (event.lengthComputable) {
+    //         const percentComplete = Math.round((event.loaded / event.total) * 100);
+    //         console.log(`Upload progress: ${percentComplete}%`);
+    //         elements.progressBar.style.width = `${percentComplete}%`;
+    //         elements.progressPercentage.textContent = `${percentComplete}%`;
+    //       }
+    //     });
+        
+    //     // Setup promise to handle async upload
+    //     const uploadPromise = new Promise((resolve, reject) => {
+    //       xhr.onload = function() {
+    //         if (xhr.status >= 200 && xhr.status < 300) {
+    //           try {
+    //             const response = JSON.parse(xhr.responseText);
+    //             console.log("Upload successful:", response);
+    //             resolve(response);
+    //           } catch (e) {
+    //             console.error("Invalid JSON response:", xhr.responseText);
+    //             reject(new Error('Invalid response from server'));
+    //           }
+    //         } else {
+    //           console.error("Upload failed with status:", xhr.status);
+    //           reject(new Error(`Upload failed: ${xhr.status} ${xhr.statusText}`));
+    //         }
+    //       };
+          
+    //       xhr.onerror = function() {
+    //         console.error("Network error during upload");
+    //         reject(new Error('Network error during upload'));
+    //       };
+          
+    //       xhr.ontimeout = function() {
+    //         console.error("Upload timed out");
+    //         reject(new Error('Upload timed out'));
+    //       };
+          
+    //       xhr.onabort = function() {
+    //         console.error("Upload aborted");
+    //         reject(new Error('Upload aborted'));
+    //       };
+    //     });
+        
+    //     // Send request
+    //     xhr.open('POST', 'https://api.sportyfy.live/api/v1/cloudflare/upload');
+    //     xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+    //     xhr.send(formData);
+        
+    //     // Wait for upload to complete
+    //     const result = await uploadPromise;
+        
+    //     // Store video ID and start processing
+    //     currentVideo.videoId = result.videoId;
+    //     console.log("Starting processing for video:", currentVideo.videoId);
+    //     startProcessing();
+        
+    //     return result;
+    //   } catch (error) {
+    //     console.error("Upload error:", error);
+    //     showError(`Upload failed: ${error.message}`);
+    //     resetUploadProgress();
+    //     throw error;
+    //   }
+    // }
+
+    // Modify the uploadVideo function in app-controller.js
+
     async function uploadVideo(file) {
       try {
         console.log("Starting upload for file:", file.name);
         
-        // Create FormData
-        const formData = new FormData();
-        formData.append('video', file);
+        // Show progress UI
+        elements.uploadProgress.classList.remove('hidden');
         
-        // Create XHR for progress tracking
-        const xhr = new XMLHttpRequest();
-        const token = localStorage.getItem('sportyfy_token');
-        
-        if (!token) {
-          throw new Error('Authentication required. Please log in again.');
-        }
-        
-        // Progress tracking
-        xhr.upload.addEventListener('progress', (event) => {
-          if (event.lengthComputable) {
-            const percentComplete = Math.round((event.loaded / event.total) * 100);
-            console.log(`Upload progress: ${percentComplete}%`);
-            elements.progressBar.style.width = `${percentComplete}%`;
-            elements.progressPercentage.textContent = `${percentComplete}%`;
-          }
+        // Use CloudflareUpload module
+        const result = await CloudflareUpload.uploadVideo(file, (percentComplete) => {
+          // Update progress UI
+          elements.progressBar.style.width = `${percentComplete}%`;
+          elements.progressPercentage.textContent = `${percentComplete}%`;
         });
-        
-        // Setup promise to handle async upload
-        const uploadPromise = new Promise((resolve, reject) => {
-          xhr.onload = function() {
-            if (xhr.status >= 200 && xhr.status < 300) {
-              try {
-                const response = JSON.parse(xhr.responseText);
-                console.log("Upload successful:", response);
-                resolve(response);
-              } catch (e) {
-                console.error("Invalid JSON response:", xhr.responseText);
-                reject(new Error('Invalid response from server'));
-              }
-            } else {
-              console.error("Upload failed with status:", xhr.status);
-              reject(new Error(`Upload failed: ${xhr.status} ${xhr.statusText}`));
-            }
-          };
-          
-          xhr.onerror = function() {
-            console.error("Network error during upload");
-            reject(new Error('Network error during upload'));
-          };
-          
-          xhr.ontimeout = function() {
-            console.error("Upload timed out");
-            reject(new Error('Upload timed out'));
-          };
-          
-          xhr.onabort = function() {
-            console.error("Upload aborted");
-            reject(new Error('Upload aborted'));
-          };
-        });
-        
-        // Send request
-        xhr.open('POST', 'https://api.sportyfy.live/api/v1/cloudflare/upload');
-        xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-        xhr.send(formData);
-        
-        // Wait for upload to complete
-        const result = await uploadPromise;
         
         // Store video ID and start processing
         currentVideo.videoId = result.videoId;
