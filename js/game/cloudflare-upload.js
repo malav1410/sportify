@@ -82,7 +82,7 @@ const CloudflareUpload = (function() {
                 resolve({ videoId: result.uid || result.id });
               }
             } catch (parseError) {
-              console.error('Error parsing Cloudflare response:', xhr.responseText);
+              console.error('Error parsing Cloudflare response:', parseError);
               reject(new Error('Invalid response from Cloudflare'));
             }
           } else {
