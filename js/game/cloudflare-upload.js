@@ -10,6 +10,9 @@ const CloudflareUpload = (function() {
       }
 
       // 2. Get a signed upload URL from your backend
+      // API Endpoint: GET /api/v1/cloudflare/signed_upload_url
+      // Backend: app/controllers/api/v1/cloudflare_controller.rb#signed_upload_url
+      // Documentation: See API-DOCUMENTATION.md
       console.log('Requesting signed upload URL from backend...');
       const urlResponse = await fetch('https://api.sportyfy.live/api/v1/cloudflare/signed_upload_url', {
         method: 'GET',
@@ -64,6 +67,9 @@ const CloudflareUpload = (function() {
               
               // Continue with backend notification...
               try {
+                // API Endpoint: POST /api/v1/cloudflare/upload_complete
+                // Backend: app/controllers/api/v1/cloudflare_controller.rb#upload_complete
+                // Documentation: See API-DOCUMENTATION.md
                 console.log('Notifying backend of successful upload...');
                 const videoId = result.uid || result.id || result.videoId || extractVideoIdFromUrl(xhr.responseURL);
                 

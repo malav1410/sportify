@@ -51,6 +51,9 @@ const AuthService = (function() {
         }
         
         // Backend authentication
+        // API Endpoint: POST /api/v1/firebase_auth
+        // Backend: app/controllers/api/v1/firebase_auth_controller.rb#authenticate
+        // Documentation: See API-DOCUMENTATION.md
         const response = await fetch('https://api.sportyfy.live/api/v1/firebase_auth', {
           method: 'POST',
           headers: {
@@ -128,6 +131,9 @@ const AuthService = (function() {
     // Handle profile completion
     async function completeProfile(userData) {
       try {
+        // API Endpoint: PATCH /api/v1/firebase_auth/complete_profile
+        // Backend: app/controllers/api/v1/firebase_auth_controller.rb#complete_profile
+        // Documentation: See API-DOCUMENTATION.md
         const response = await fetch('https://api.sportyfy.live/api/v1/firebase_auth/complete_profile', {
           method: 'PATCH',
           headers: {
