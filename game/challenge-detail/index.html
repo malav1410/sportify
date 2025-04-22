@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Challenge Details | SPORTYFY.LIVE</title>
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer','GTM-KRSZPGJD');</script>
+    <!-- End Google Tag Manager -->
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              "sporty-red": "#FF0000",
+              "sporty-black": "#111111",
+            },
+            fontFamily: {
+              sporty: ["Oswald", "sans-serif"],
+            },
+            animation: {
+              "pulse-fast": "pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+            },
+          },
+        },
+      };
+    </script>
+    
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.19.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.19.1/firebase-auth-compat.js"></script>
+    <script>
+      // Your web app's Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyCvbPp-kmuu9gCyFuLyhHDJVtkp36z8JzU",
+        authDomain: "sportyfy-live.firebaseapp.com",
+        projectId: "sportyfy-live",
+        storageBucket: "sportyfy-live.firebasestorage.app",
+        messagingSenderId: "291348993870",
+        appId: "1:291348993870:web:11c03d5faa378efff5f01f",
+        measurementId: "G-1FC6MNS2FY"
+      };
+      
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+    </script>
+    
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/auth-modal.css">
+    <link rel="stylesheet" href="../../css/game.css">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+      body {
+        font-family: "Oswald", sans-serif;
+        background-color: #111111;
+        color: white;
+        overflow-x: hidden;
+      }
+
+      .noise-bg {
+        position: relative;
+      }
+
+      .noise-bg::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        opacity: 0.05;
+        pointer-events: none;
+        z-index: 1;
+      }
+
+      .glitch-text {
+        position: relative;
+        display: inline-block;
+      }
+
+      .glitch-text::before,
+      .glitch-text::after {
+        content: attr(data-text);
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+      }
+
+      .glitch-text::before {
+        left: 2px;
+        text-shadow: -1px 0 #ff1744;
+        clip: rect(44px, 450px, 56px, 0);
+        animation: glitch-anim 5s infinite linear alternate-reverse;
+      }
+
+      .glitch-text::after {
+        left: -2px;
+        text-shadow: -1px 0 #ff1744;
+        clip: rect(44px, 450px, 56px, 0);
+        animation: glitch-anim2 5s infinite linear alternate-reverse;
+      }
+
+      @keyframes glitch-anim {
+        0% { clip: rect(31px, 9999px, 94px, 0); }
+        20% { clip: rect(93px, 9999px, 59px, 0); }
+        40% { clip: rect(45px, 9999px, 13px, 0); }
+        60% { clip: rect(60px, 9999px, 8px, 0); }
+        80% { clip: rect(18px, 9999px, 29px, 0); }
+        100% { clip: rect(1px, 9999px, 91px, 0); }
+      }
+
+      @keyframes glitch-anim2 {
+        0% { clip: rect(65px, 9999px, 99px, 0); }
+        20% { clip: rect(40px, 9999px, 15px, 0); }
+        40% { clip: rect(28px, 9999px, 64px, 0); }
+        60% { clip: rect(35px, 9999px, 99px, 0); }
+        80% { clip: rect(82px, 9999px, 31px, 0); }
+        100% { clip: rect(95px, 9999px, 85px, 0); }
+      }
+      
+      .live-dot {
+        animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      }
+
+      @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+      }
+    </style>
+</head>
+<body class="bg-black text-white">
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KRSZPGJD"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 w-full bg-sporty-black bg-opacity-90 z-50 border-b-4 border-sporty-red">
+      <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+        <div class="flex items-center">
+          <a href="/" class="text-3xl font-bold tracking-wider text-white">
+            <span class="glitch-text" data-text="SPORTYFY">SPORTYFY</span>
+            <span class="text-sporty-red">.LIVE</span>
+          </a>
+        </div>
+        <div class="md:flex space-x-8 items-center">
+          <a href="/#vision" class="text-white font-semibold hover:text-sporty-red transition">VISION</a>
+          <a href="/#how" class="text-white font-semibold hover:text-sporty-red transition">HOW</a>
+          <a href="/#sports" class="text-white font-semibold hover:text-sporty-red transition">SPORTS</a>
+          <a href="/game" class="text-white font-semibold hover:text-sporty-red transition">AI HIGHLIGHTS</a>
+          <div class="flex space-x-4 auth-nav-buttons">
+            <!-- Auth buttons will be dynamically inserted here -->
+            <div class="flex items-center space-x-2">
+              <span class="text-white">malav</span>
+              <a href="#" id="logout-button" class="text-gray-400 hover:text-sporty-red">LOGOUT</a>
+            </div>
+          </div>
+        </div>
+        <button class="md:hidden text-white text-2xl menu-toggle">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="noise-bg flex-grow py-6 md:py-12 pt-24">
+        <div class="container mx-auto px-4 relative z-10">
+            <!-- Breadcrumbs -->
+            <div class="mb-6 text-sm text-gray-400">
+                <a href="/" class="hover:text-sporty-red transition duration-300">Home</a>
+                <span class="mx-2">/</span>
+                <a href="/game/challenges" class="hover:text-sporty-red transition duration-300">Challenges</a>
+                <span class="mx-2">/</span>
+                <span id="challenge-title" class="text-white">Challenge Details</span>
+            </div>
+
+            <!-- Loading Indicator -->
+            <div id="challenge-loading" class="flex justify-center items-center py-20">
+                <div class="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-sporty-red"></div>
+                <p class="ml-4 text-xl text-white">Loading challenge details...</p>
+            </div>
+
+            <!-- Challenge Details (Hidden until loaded) -->
+            <div id="challenge-details" style="display: none;">
+                <!-- Challenge Header -->
+                <div class="bg-sporty-black border-2 border-gray-800 rounded-t-lg p-6 md:p-8 relative overflow-hidden">
+                    <div class="absolute -left-20 -top-20 w-64 h-64 bg-sporty-red opacity-5 rounded-full"></div>
+                    <div class="absolute -right-20 -bottom-20 w-80 h-80 bg-sporty-red opacity-5 rounded-full"></div>
+                    
+                    <div class="relative">
+                        <div id="challenge-badges" class="flex flex-wrap gap-3 mb-3">
+                            <!-- Difficulty and sport badges will be inserted here -->
+                        </div>
+                        
+                        <h1 id="challenge-title-heading" class="text-3xl md:text-4xl font-bold mb-4">Challenge Details</h1>
+                        
+                        <p id="challenge-description" class="text-gray-300 mb-6 max-w-3xl">
+                            Loading challenge description...
+                        </p>
+                        
+                        <div id="challenge-rewards" class="flex flex-wrap items-center gap-6">
+                            <!-- Rewards will be inserted here -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 bg-sporty-black border-2 border-t-0 border-gray-800 rounded-b-lg p-6 md:p-8">
+                    <!-- Left Column - Challenge Requirements -->
+                    <div class="md:col-span-2">
+                        <h2 class="text-xl font-bold mb-4 flex items-center">
+                            <i class="fas fa-clipboard-list text-sporty-red mr-2"></i>
+                            Requirements
+                        </h2>
+                        
+                        <div id="challenge-requirements" class="bg-black/50 rounded-lg border border-gray-800 p-5 mb-8">
+                            <!-- Requirements will be inserted here -->
+                        </div>
+                        
+                        <h2 class="text-xl font-bold mb-4 flex items-center">
+                            <i class="fas fa-check-circle text-sporty-red mr-2"></i>
+                            Verification Rules
+                        </h2>
+                        
+                        <div id="challenge-verification" class="bg-black/50 rounded-lg border border-gray-800 p-5">
+                            <!-- Verification rules will be inserted here -->
+                        </div>
+                    </div>
+                    
+                    <!-- Right Column - Submit Section -->
+                    <div>
+                        <div class="bg-black/50 rounded-lg border border-gray-800 p-5 sticky top-6">
+                            <h2 class="text-xl font-bold mb-4 flex items-center">
+                                <i class="fas fa-upload text-sporty-red mr-2"></i>
+                                Submit Your Challenge
+                            </h2>
+                            
+                            <div class="mb-6">
+                                <div id="challenge-status" class="bg-blue-900/30 border border-blue-700/30 text-blue-400 rounded-md p-4 mb-4">
+                                    <div class="flex">
+                                        <i class="fas fa-info-circle mt-0.5 mr-3"></i>
+                                        <p>You haven't attempted this challenge yet.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <button id="submit-challenge-btn" class="w-full bg-sporty-red hover:bg-red-700 text-white font-bold py-3 px-4 rounded transition duration-300 flex items-center justify-center">
+                                <i class="fas fa-video mr-2"></i>
+                                Record & Submit
+                            </button>
+                            
+                            <p class="text-sm text-gray-500 mt-4">
+                                By submitting a video, you agree to our 
+                                <a href="/terms" class="text-sporty-red hover:underline">Terms of Service</a> 
+                                and 
+                                <a href="/privacy" class="text-sporty-red hover:underline">Privacy Policy</a>.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-black py-12 border-t-2 border-sporty-red mt-12">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-12">
+                <h2 class="text-4xl font-bold mb-6 md:mb-0">
+                    <span class="glitch-text" data-text="SPORTYFY">SPORTYFY</span>
+                    <span class="text-sporty-red">.LIVE</span>
+                </h2>
+                <p class="text-xl font-bold">BROADCAST YOUR GAME. CLAIM YOUR FAME.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 border-t border-gray-800 pt-8">
+                <div>
+                    <h5 class="text-xl font-bold mb-4">CONTACT</h5>
+                    <a href="mailto:info@sportyfy.live" class="text-gray-400 hover:text-sporty-red transition duration-300">info@sportyfy.live</a>
+                </div>
+                <div>
+                    <h5 class="text-xl font-bold mb-4">LEGAL</h5>
+                    <a href="#" class="text-gray-400 hover:text-sporty-red transition duration-300 block mb-2">Privacy Policy</a>
+                    <a href="#" class="text-gray-400 hover:text-sporty-red transition duration-300 block mb-2">Terms of Service</a>
+                </div>
+                <div>
+                    <h5 class="text-xl font-bold mb-4">FOLLOW US</h5>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-sporty-red transition duration-300">
+                            <i class="fab fa-instagram text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-sporty-red transition duration-300">
+                            <i class="fab fa-twitter text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-sporty-red transition duration-300">
+                            <i class="fab fa-facebook text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8 pt-8 border-t border-gray-800 text-center text-gray-500">
+                <p>&copy; 2023 SPORTYFY.LIVE. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Authentication Modal -->
+    <div id="auth-modal" class="auth-modal">
+      <div class="auth-container">
+        <button class="close-btn">&times;</button>
+        
+        <div class="tab-content active" id="login-tab">
+          <h2>GET IN THE GAME!</h2>
+          <form id="phone-auth-form">
+            <div class="form-group">
+              <label for="phone-number">Mobile Number</label>
+              <div class="phone-input-group">
+                <span class="country-code">+91</span>
+                <input type="tel" id="phone-number" pattern="[0-9]{10}" maxlength="10" required placeholder="10-digit number">
+              </div>
+            </div>
+            
+            <div id="send-otp-container">
+              <button type="button" id="send-otp-btn" class="auth-btn">GET OTP</button>
+            </div>
+            
+            <div id="verify-otp-container" class="hidden">
+              <div class="form-group">
+                <label for="otp-input">Enter OTP sent to your phone</label>
+                <input type="text" id="otp-input" pattern="[0-9]{6}" maxlength="6" required placeholder="6-digit OTP">
+              </div>
+              
+              <div class="resend-container">
+                <span id="timer-text">Resend OTP in <span id="timer">01:00</span></span>
+                <button type="button" id="resend-btn" class="link-btn hidden">Resend OTP</button>
+              </div>
+              
+              <button type="button" id="verify-otp-btn" class="auth-btn">VERIFY & CONTINUE</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div id="recaptcha-container"></div>
+
+    <!-- JavaScript -->
+    <script src="../../js/auth/firebase-auth.js"></script>
+    <script src="../../js/auth/auth-service.js"></script>
+    <script src="../../js/auth/auth-ui.js"></script>
+    
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        // Initialize auth service
+        if (typeof AuthService !== 'undefined') {
+          AuthService.initialize();
+          console.log("Auth service initialized for challenge detail page");
+        }
+        
+        // Parse URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const challengeId = urlParams.get('id');
+        
+        if (challengeId) {
+          console.log('Loading challenge with ID:', challengeId);
+          // Call API to get challenge details
+          fetchChallengeDetails(challengeId);
+        } else {
+          document.getElementById('challenge-loading').innerHTML = `
+            <div class="text-center">
+              <p class="text-xl text-red-500 mb-4">Error: No challenge ID provided</p>
+              <a href="/game/challenges" class="bg-sporty-red text-white px-4 py-2 rounded-md">Go Back to Challenges</a>
+            </div>
+          `;
+        }
+        
+        // Fix the Submit Challenge button URL
+        const submitButton = document.getElementById('submit-challenge-btn');
+        if (submitButton) {
+          submitButton.addEventListener('click', function() {
+            window.location.href = `/game/submit-challenge?challenge_id=${challengeId}`;
+          });
+        }
+      });
+      
+      // Function to fetch challenge details
+      function fetchChallengeDetails(id) {
+        // For now, simulate API call with timeout
+        document.getElementById('challenge-loading').style.display = 'flex';
+        document.getElementById('challenge-details').style.display = 'none';
+        
+        // API endpoint for challenges
+        const API_BASE_URL = 'https://api.sportyfy.live/api/v1';
+        const url = `${API_BASE_URL}/challenges/${id}`;
+        
+        // Make API request or use placeholder data for demo
+        setTimeout(() => {
+          // Hide loading and show details
+          document.getElementById('challenge-loading').style.display = 'none';
+          document.getElementById('challenge-details').style.display = 'block';
+          
+          // For demo purposes, populate with hardcoded data
+          // In production, replace with actual API call and response data
+          const challengeDemo = {
+            id: id,
+            title: "Free Throw Challenge",
+            description: "Complete 10 free throws in a row. Video must show continuous shots without editing.",
+            difficulty: "easy",
+            sport_type: "basketball",
+            points_reward: 10,
+            badge_reward: "Free Throw Master",
+            equipment: ["Basketball", "Basketball court with free throw line"],
+            time_limit: "120 seconds (2 minutes)",
+            instructions: "Find a basketball court with a free throw line. Set up your camera to capture both you and the basket. Make 10 consecutive free throws without editing the video.",
+            verification_rules: [
+              "Full body must be visible in the frame",
+              "Ball going into the basket must be clearly visible",
+              "Video must be continuous without cuts or edits"
+            ]
+          };
+          
+          // Update page elements with challenge data
+          document.getElementById('challenge-title').textContent = challengeDemo.title;
+          document.getElementById('challenge-title-heading').textContent = challengeDemo.title;
+          document.getElementById('challenge-description').textContent = challengeDemo.description;
+          
+          // Add badges
+          document.getElementById('challenge-badges').innerHTML = `
+            <span class="bg-green-900/40 text-green-400 text-xs font-bold px-3 py-1 rounded-full border border-green-500/30">${challengeDemo.difficulty.charAt(0).toUpperCase() + challengeDemo.difficulty.slice(1)}</span>
+            <span class="bg-gray-800 text-white text-xs px-3 py-1 rounded-full">${challengeDemo.sport_type.charAt(0).toUpperCase() + challengeDemo.sport_type.slice(1)}</span>
+          `;
+          
+          // Add rewards
+          document.getElementById('challenge-rewards').innerHTML = `
+            <div class="flex items-center">
+                <i class="fas fa-medal text-yellow-500 mr-2 text-lg"></i>
+                <span class="font-bold">${challengeDemo.badge_reward}</span>
+            </div>
+            <div class="flex items-center">
+                <i class="fas fa-star text-yellow-500 mr-2 text-lg"></i>
+                <span class="font-bold">${challengeDemo.points_reward} points</span>
+            </div>
+          `;
+          
+          // Add requirements
+          document.getElementById('challenge-requirements').innerHTML = `
+            <h3 class="font-bold mb-2 text-sporty-red">Equipment Needed:</h3>
+            <ul class="list-disc pl-5 mb-4 text-gray-300 space-y-1">
+                ${challengeDemo.equipment.map(item => `<li>${item}</li>`).join('')}
+            </ul>
+            
+            <h3 class="font-bold mb-2 text-sporty-red">Time Limit:</h3>
+            <p class="mb-4 text-gray-300">${challengeDemo.time_limit}</p>
+            
+            <h3 class="font-bold mb-2 text-sporty-red">Instructions:</h3>
+            <p class="text-gray-300">
+                ${challengeDemo.instructions}
+            </p>
+          `;
+          
+          // Add verification rules
+          document.getElementById('challenge-verification').innerHTML = `
+            <ul class="space-y-3 text-gray-300">
+                ${challengeDemo.verification_rules.map(rule => `
+                    <li class="flex items-start">
+                        <i class="fas fa-check text-green-500 mt-1 mr-3"></i>
+                        <span>${rule}</span>
+                    </li>
+                `).join('')}
+            </ul>
+          `;
+        }, 1000);
+      }
+    </script>
+</body>
+</html> 

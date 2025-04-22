@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Challenge | Sportify</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/game.css">
+    <link rel="stylesheet" href="/css/game/submit-challenge.css">
+    <script src="/js/game/submit-challenge.js" defer></script>
+</head>
+<body>
+    <header class="main-header">
+        <div class="container">
+            <a href="/" class="logo">
+                <img src="/assets/logo.png" alt="Sportify">
+            </a>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="/index.html">Home</a></li>
+                    <li><a href="/pages/game.html">Game</a></li>
+                    <li><a href="/game/challenges">Challenges</a></li>
+                    <li class="active">Submit Challenge</li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="submission-container">
+            <div class="breadcrumb-container">
+                <a href="/index.html">Home</a> &gt;
+                <a href="/pages/game.html">Game</a> &gt;
+                <a href="/game/challenges">Challenges</a> &gt;
+                <span>Submit</span>
+            </div>
+
+            <h1 class="page-title" id="challenge-title">Submit Challenge</h1>
+            <p class="description" id="challenge-description">Record or upload a video of yourself completing this challenge to earn points and climb the leaderboard!</p>
+
+            <div id="loading-indicator" class="loading-spinner"></div>
+
+            <div id="challenge-content" style="display: none;">
+                <div class="tab-buttons">
+                    <div class="tab-button active" data-tab="record">Record Video</div>
+                    <div class="tab-button" data-tab="upload">Upload Video</div>
+                </div>
+
+                <div id="record-tab" class="tab-content">
+                    <div class="recording-area">
+                        <div class="video-container">
+                            <video id="video-preview" class="video-preview" autoplay muted playsinline></video>
+                            <div id="recording-time" class="recording-time" style="display: none;">00:00</div>
+                        </div>
+                        <div class="recording-controls">
+                            <button id="start-recording" class="record-button start-recording">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 0.5rem;">
+                                    <circle cx="12" cy="12" r="8"></circle>
+                                </svg>
+                                Start Recording
+                            </button>
+                            <button id="stop-recording" class="record-button stop-recording" style="display: none;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 0.5rem;">
+                                    <rect x="6" y="6" width="12" height="12" rx="1"></rect>
+                                </svg>
+                                Stop Recording
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="upload-tab" class="tab-content" style="display: none;">
+                    <label for="upload-input" class="upload-area" id="upload-area">
+                        <div class="upload-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="17 8 12 3 7 8"></polyline>
+                                <line x1="12" y1="3" x2="12" y2="15"></line>
+                            </svg>
+                        </div>
+                        <p class="upload-text">Drag and drop a video file or click to browse</p>
+                        <p class="upload-hint">Maximum file size: 100MB</p>
+                        <input type="file" id="upload-input" class="upload-input" accept="video/*">
+                    </label>
+
+                    <div id="upload-progress" class="upload-progress-container" style="display: none;">
+                        <div class="upload-file-info">
+                            <span id="file-name">file.mp4</span>
+                            <span id="file-size">0 MB</span>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div id="progress-bar" class="progress-bar"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="video-preview-container" style="display: none; margin-top: 1.5rem;">
+                    <h3 style="margin-bottom: 0.75rem;">Preview</h3>
+                    <video id="uploaded-preview" style="width: 100%; border-radius: 0.5rem;" controls></video>
+                </div>
+
+                <div class="verification-checklist">
+                    <h3 class="checklist-title">Submission Requirements</h3>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="check-video" class="checkbox-input">
+                        <label for="check-video" class="checkbox-label">I have recorded or uploaded a video showing me completing the challenge</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="check-rules" class="checkbox-input">
+                        <label for="check-rules" class="checkbox-label">I followed all the challenge rules and guidelines</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="check-original" class="checkbox-input">
+                        <label for="check-original" class="checkbox-label">This is my original submission and has not been submitted before</label>
+                    </div>
+                </div>
+
+                <button id="submit-button" class="submit-button" disabled>Submit Challenge</button>
+
+                <div id="status-message" class="status-container" style="display: none;"></div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="main-footer">
+        <div class="container">
+            <p>&copy; 2023 Sportify. All rights reserved.</p>
+            <nav class="footer-nav">
+                <ul>
+                    <li><a href="/pages/about.html">About</a></li>
+                    <li><a href="/pages/privacy.html">Privacy</a></li>
+                    <li><a href="/pages/terms.html">Terms</a></li>
+                </ul>
+            </nav>
+        </div>
+    </footer>
+</body>
+</html> 

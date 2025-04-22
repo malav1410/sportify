@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Challenge - Sportify</title>
+    <!-- Auto-redirect to the directory version -->
+    <script>
+        // Preserve the query parameters when redirecting
+        const currentUrl = new URL(window.location.href);
+        const queryString = currentUrl.search;
+        window.location.href = "/game/submit-challenge/" + queryString;
+    </script>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/game.css">
+    <link rel="stylesheet" href="../css/game/submit-challenge.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <div class="logo">
+                <a href="../index.html">
+                    <img src="../img/sportify-logo.png" alt="Sportify">
+                </a>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="../games.html">Games</a></li>
+                    <li><a href="../leaderboard.html">Leaderboard</a></li>
+                    <li><a href="../profile.html">Profile</a></li>
+                </ul>
+            </nav>
+            <div class="account-buttons">
+                <a href="../login.html" class="btn btn-outline">Log In</a>
+                <a href="../signup.html" class="btn btn-primary">Sign Up</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="submission-container">
+            <!-- Loading Indicator -->
+            <div id="loading-indicator">
+                <div class="loading-spinner"></div>
+                <p>Loading challenge details...</p>
+            </div>
+
+            <!-- Challenge Content -->
+            <div id="challenge-content">
+                <!-- Breadcrumb Navigation -->
+                <div class="breadcrumb">
+                    <a href="../games.html">Games</a>
+                    <span class="breadcrumb-separator">›</span>
+                    <a href="game-detail.html" id="game-link">Game Title</a>
+                    <span class="breadcrumb-separator">›</span>
+                    <span>Submit Challenge</span>
+                </div>
+
+                <!-- Challenge Header -->
+                <div class="challenge-header">
+                    <h1 id="challenge-title">Challenge Title</h1>
+                    <p id="challenge-description">Loading challenge description...</p>
+                </div>
+
+                <!-- Submission Tabs -->
+                <div class="tabs">
+                    <button class="tab-button active" data-tab="record">Record Video</button>
+                    <button class="tab-button" data-tab="upload">Upload File</button>
+                </div>
+
+                <!-- Record Tab Content -->
+                <div id="record-tab" class="tab-content" style="display: block;">
+                    <div class="video-container">
+                        <video id="video-preview" autoplay muted></video>
+                        <div id="recording-time">00:00</div>
+                    </div>
+                    <div class="recording-controls">
+                        <button id="start-recording" class="recording-btn">
+                            <i class="fas fa-circle icon"></i> Start Recording
+                        </button>
+                        <button id="stop-recording" class="recording-btn">
+                            <i class="fas fa-stop icon"></i> Stop Recording
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Upload Tab Content -->
+                <div id="upload-tab" class="tab-content">
+                    <div id="upload-area">
+                        <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                        <h3>Drag and drop your video here</h3>
+                        <p>or click to browse files</p>
+                        <p>Supported formats: MP4, MOV, AVI (Max 100MB)</p>
+                        <input type="file" id="upload-input" accept="video/mp4,video/quicktime,video/x-msvideo">
+                    </div>
+                    
+                    <div id="upload-progress">
+                        <div class="progress-info">
+                            <span id="file-name">file.mp4</span>
+                            <span id="file-size">0 MB</span>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div id="progress-bar"></div>
+                        </div>
+                    </div>
+                    
+                    <div id="video-preview-container">
+                        <h3>Video Preview</h3>
+                        <video id="uploaded-preview" controls></video>
+                    </div>
+                </div>
+
+                <!-- Verification Checklist -->
+                <div class="verification-container">
+                    <h3>Submission Guidelines</h3>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="guideline-1" class="checkbox-input">
+                        <label for="guideline-1" class="checkbox-label">I confirm this is my original content and I have permission to submit it.</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="guideline-2" class="checkbox-input">
+                        <label for="guideline-2" class="checkbox-label">My submission follows all the challenge rules and requirements.</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="guideline-3" class="checkbox-input">
+                        <label for="guideline-3" class="checkbox-label">I understand my submission may be publicly viewable on the Sportify platform.</label>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="submit-container">
+                    <button id="submit-button" disabled>Submit Challenge</button>
+                </div>
+
+                <!-- Status Message -->
+                <div id="status-message" class="status-container"></div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-columns">
+                <div class="footer-column">
+                    <h3>About Sportify</h3>
+                    <p>Sportify is a platform for sports enthusiasts to compete, challenge friends, and improve their skills.</p>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="../about.html">About</a></li>
+                        <li><a href="../contact.html">Contact</a></li>
+                        <li><a href="../privacy.html">Privacy Policy</a></li>
+                        <li><a href="../terms.html">Terms of Service</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Follow Us</h3>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 Sportify. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/game/submit-challenge.js"></script>
+</body>
+</html> 

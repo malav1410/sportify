@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Challenge | SPORTYFY.LIVE</title>
+    
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer','GTM-KRSZPGJD');</script>
+    <!-- End Google Tag Manager -->
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              "sporty-red": "#FF0000",
+              "sporty-black": "#111111",
+            },
+            fontFamily: {
+              sporty: ["Oswald", "sans-serif"],
+            }
+          },
+        },
+      };
+    </script>
+    
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/auth-modal.css">
+    <link rel="stylesheet" href="../../css/game.css">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-black text-white">
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KRSZPGJD"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 w-full bg-sporty-black bg-opacity-90 z-50 border-b-4 border-sporty-red">
+      <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+        <div class="flex items-center">
+          <a href="/" class="text-3xl font-bold tracking-wider text-white">
+            <span class="glitch-text" data-text="SPORTYFY">SPORTYFY</span>
+            <span class="text-sporty-red">.LIVE</span>
+          </a>
+        </div>
+        <div class="md:flex space-x-8 items-center">
+          <a href="/#vision" class="text-white font-semibold hover:text-sporty-red transition">VISION</a>
+          <a href="/#how" class="text-white font-semibold hover:text-sporty-red transition">HOW</a>
+          <a href="/#sports" class="text-white font-semibold hover:text-sporty-red transition">SPORTS</a>
+          <a href="/game" class="text-white font-semibold hover:text-sporty-red transition">AI HIGHLIGHTS</a>
+          <div class="flex space-x-4 auth-nav-buttons">
+            <!-- Auth buttons will be dynamically inserted here -->
+            <div class="flex items-center space-x-2">
+              <span class="text-white">malav</span>
+              <a href="#" id="logout-button" class="text-gray-400 hover:text-sporty-red">LOGOUT</a>
+            </div>
+          </div>
+        </div>
+        <button class="md:hidden text-white text-2xl menu-toggle">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="pt-24">
+        <div class="container mx-auto px-4">
+            <!-- Breadcrumbs -->
+            <div class="mb-6 text-sm text-gray-400">
+                <a href="/" class="hover:text-sporty-red transition duration-300">Home</a>
+                <span class="mx-2">/</span>
+                <a href="/game/challenges" class="hover:text-sporty-red transition duration-300">Challenges</a>
+                <span class="mx-2">/</span>
+                <span id="challenge-title" class="text-white">Submit Challenge</span>
+            </div>
+
+            <!-- Challenge Submission Page -->
+            <div class="bg-sporty-black border-2 border-gray-800 rounded-lg p-6 md:p-8">
+                <h1 class="text-2xl md:text-3xl font-bold mb-6">Submit Your Challenge</h1>
+                
+                <div id="challenge-details-container" class="mb-8 p-4 bg-black/50 rounded-lg">
+                    <h2 id="challenge-title-heading" class="text-xl font-bold mb-2">Loading challenge details...</h2>
+                    <p id="challenge-description" class="text-gray-400">Please wait while we load the challenge details.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Recording Section -->
+                    <div class="bg-black/50 rounded-lg border border-gray-800 p-4">
+                        <h3 class="text-lg font-bold mb-3 flex items-center">
+                            <i class="fas fa-video text-sporty-red mr-2"></i>
+                            Record Your Submission
+                        </h3>
+                        
+                        <div class="aspect-video bg-black mb-4 relative flex items-center justify-center" id="video-container">
+                            <video id="video-preview" class="w-full h-full hidden"></video>
+                            <div class="text-center" id="camera-placeholder">
+                                <i class="fas fa-camera text-3xl text-gray-500 mb-2"></i>
+                                <p class="text-gray-500">Camera preview will appear here</p>
+                            </div>
+                            <div id="recording-indicator" class="absolute top-2 right-2 hidden">
+                                <span class="inline-block w-3 h-3 bg-red-500 rounded-full animate-pulse mr-1"></span>
+                                <span class="text-sm font-semibold">REC</span>
+                            </div>
+                            <div id="recording-timer" class="absolute bottom-2 right-2 text-white bg-black/70 px-2 py-1 rounded-md text-sm font-mono hidden">00:00</div>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <button id="start-recording" class="bg-sporty-red hover:bg-red-700 text-white py-2 rounded flex items-center justify-center">
+                                <i class="fas fa-circle mr-2"></i> Start Recording
+                            </button>
+                            <button id="stop-recording" class="bg-gray-700 text-white py-2 rounded flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                                <i class="fas fa-stop mr-2"></i> Stop Recording
+                            </button>
+                            <button id="play-recording" class="bg-blue-600 hover:bg-blue-700 text-white py-2 rounded flex items-center justify-center col-span-2 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                                <i class="fas fa-play mr-2"></i> Play Recording
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Upload Section -->
+                    <div class="bg-black/50 rounded-lg border border-gray-800 p-4">
+                        <h3 class="text-lg font-bold mb-3 flex items-center">
+                            <i class="fas fa-upload text-sporty-red mr-2"></i>
+                            Upload Video
+                        </h3>
+                        
+                        <div id="upload-container" class="border-2 border-dashed border-gray-700 rounded-lg p-6 text-center mb-4 hover:border-sporty-red transition-colors cursor-pointer">
+                            <i class="fas fa-cloud-upload-alt text-4xl text-gray-500 mb-3"></i>
+                            <p class="mb-2 text-gray-300">Drag and drop your video here</p>
+                            <p class="text-gray-500 text-sm mb-3">or</p>
+                            <button id="browse-files" class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-md text-sm">Browse Files</button>
+                            <input type="file" id="file-input" class="hidden" accept="video/*">
+                            <p class="mt-3 text-gray-500 text-xs">Supported formats: MP4, MOV, AVI (max 100MB)</p>
+                        </div>
+                        
+                        <div id="upload-progress-container" class="hidden">
+                            <div class="flex justify-between items-center mb-2">
+                                <span id="file-name" class="text-sm text-gray-300 truncate">filename.mp4</span>
+                                <span id="file-size" class="text-xs text-gray-500">0 MB</span>
+                            </div>
+                            
+                            <div class="w-full bg-gray-700 rounded-full h-2.5 mb-4">
+                                <div id="upload-progress-bar" class="bg-sporty-red h-2.5 rounded-full" style="width: 0%"></div>
+                            </div>
+                            
+                            <div class="flex justify-between">
+                                <button id="cancel-upload" class="text-gray-400 hover:text-white text-sm">Cancel</button>
+                                <span id="upload-status" class="text-gray-400 text-sm">Preparing upload...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Verification Checklist -->
+                <div class="mt-8 p-4 bg-black/50 rounded-lg border border-gray-800">
+                    <h3 class="text-lg font-bold mb-4">Verification Checklist</h3>
+                    
+                    <div class="space-y-3">
+                        <div class="flex items-start">
+                            <input type="checkbox" id="consent-checkbox" class="mt-1 mr-3">
+                            <label for="consent-checkbox" class="text-gray-300">I confirm this is my original content and I have permission to submit it.</label>
+                        </div>
+                        <div class="flex items-start">
+                            <input type="checkbox" id="rules-checkbox" class="mt-1 mr-3">
+                            <label for="rules-checkbox" class="text-gray-300">My submission follows all the challenge rules and requirements.</label>
+                        </div>
+                        <div class="flex items-start">
+                            <input type="checkbox" id="public-checkbox" class="mt-1 mr-3">
+                            <label for="public-checkbox" class="text-gray-300">I understand my submission may be publicly viewable on the SPORTYFY.LIVE platform.</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Submit Button -->
+                <div class="mt-6 text-center">
+                    <button id="submit-button" class="bg-sporty-red text-white py-3 px-8 rounded-lg text-lg font-bold opacity-50 cursor-not-allowed">
+                        Submit Challenge
+                    </button>
+                    
+                    <p class="mt-3 text-gray-500 text-sm">
+                        By submitting, you agree to our <a href="/terms" class="text-sporty-red hover:underline">Terms of Service</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- JavaScript Files -->
+    <script src="../../js/auth/firebase-auth.js"></script>
+    <script src="../../js/auth/auth-service.js"></script>
+    <script src="../../js/auth/auth-ui.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        // Parse URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const challengeId = urlParams.get('challenge_id');
+        
+        if (challengeId) {
+          console.log('Loading challenge submission for ID:', challengeId);
+          // Fetch challenge details
+          fetchChallengeDetails(challengeId);
+        } else {
+          document.getElementById('challenge-details-container').innerHTML = `
+            <div class="text-center py-4">
+              <p class="text-red-500 mb-4">Error: No challenge ID provided</p>
+              <a href="/game/challenges" class="bg-sporty-red text-white px-4 py-2 rounded-md">Go Back to Challenges</a>
+            </div>
+          `;
+        }
+        
+        // Simplified fetch function (replace with actual API call)
+        function fetchChallengeDetails(id) {
+          setTimeout(() => {
+            document.getElementById('challenge-title-heading').textContent = 'Free Throw Challenge';
+            document.getElementById('challenge-description').textContent = 
+              'Complete 10 free throws in a row. Video must show continuous shots without editing.';
+            document.getElementById('challenge-title').textContent = 'Submit: Free Throw Challenge';
+          }, 1000);
+        }
+        
+        // Video Recording Setup
+        const startButton = document.getElementById('start-recording');
+        const stopButton = document.getElementById('stop-recording');
+        const playButton = document.getElementById('play-recording');
+        const videoPreview = document.getElementById('video-preview');
+        const cameraPlaceholder = document.getElementById('camera-placeholder');
+        const recordingIndicator = document.getElementById('recording-indicator');
+        const recordingTimer = document.getElementById('recording-timer');
+        
+        let stream;
+        let mediaRecorder;
+        let recordedChunks = [];
+        let recordingStartTime;
+        let timerInterval;
+        
+        // Start camera when page loads
+        async function setupCamera() {
+          try {
+            stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+            videoPreview.srcObject = stream;
+            videoPreview.classList.remove('hidden');
+            cameraPlaceholder.classList.add('hidden');
+            
+            // Enable start recording button
+            startButton.disabled = false;
+          } catch (err) {
+            console.error('Error accessing camera:', err);
+            cameraPlaceholder.innerHTML = `
+              <i class="fas fa-exclamation-triangle text-3xl text-red-500 mb-2"></i>
+              <p class="text-red-400">Camera access denied or unavailable</p>
+            `;
+          }
+        }
+        
+        // Call setupCamera after a short delay
+        setTimeout(setupCamera, 1000);
+        
+        // Recording events
+        startButton.addEventListener('click', function() {
+          if (!stream) return;
+          
+          mediaRecorder = new MediaRecorder(stream);
+          recordedChunks = [];
+          
+          mediaRecorder.ondataavailable = function(e) {
+            if (e.data.size > 0) {
+              recordedChunks.push(e.data);
+            }
+          };
+          
+          mediaRecorder.onstop = function() {
+            // Enable play button
+            playButton.disabled = false;
+          };
+          
+          // Start recording
+          mediaRecorder.start();
+          startButton.disabled = true;
+          stopButton.disabled = false;
+          stopButton.classList.remove('bg-gray-700');
+          stopButton.classList.add('bg-red-700', 'hover:bg-red-800');
+          
+          // Show recording indicator and timer
+          recordingIndicator.classList.remove('hidden');
+          recordingTimer.classList.remove('hidden');
+          
+          // Set up timer
+          recordingStartTime = Date.now();
+          timerInterval = setInterval(updateRecordingTime, 1000);
+        });
+        
+        stopButton.addEventListener('click', function() {
+          if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+            mediaRecorder.stop();
+            stopButton.disabled = true;
+            startButton.disabled = false;
+            
+            // Hide recording indicator and stop timer
+            recordingIndicator.classList.add('hidden');
+            clearInterval(timerInterval);
+          }
+        });
+        
+        playButton.addEventListener('click', function() {
+          if (recordedChunks.length === 0) return;
+          
+          const blob = new Blob(recordedChunks, { type: 'video/webm' });
+          const url = URL.createObjectURL(blob);
+          
+          // Stop camera stream
+          if (videoPreview.srcObject) {
+            videoPreview.srcObject.getTracks().forEach(track => track.stop());
+            videoPreview.srcObject = null;
+          }
+          
+          // Play the recorded video
+          videoPreview.src = url;
+          videoPreview.controls = true;
+          videoPreview.play();
+        });
+        
+        function updateRecordingTime() {
+          const elapsed = Math.floor((Date.now() - recordingStartTime) / 1000);
+          const minutes = Math.floor(elapsed / 60).toString().padStart(2, '0');
+          const seconds = (elapsed % 60).toString().padStart(2, '0');
+          recordingTimer.textContent = `${minutes}:${seconds}`;
+        }
+        
+        // File Upload Setup
+        const uploadContainer = document.getElementById('upload-container');
+        const fileInput = document.getElementById('file-input');
+        const browseButton = document.getElementById('browse-files');
+        const progressContainer = document.getElementById('upload-progress-container');
+        const progressBar = document.getElementById('upload-progress-bar');
+        const fileName = document.getElementById('file-name');
+        const fileSize = document.getElementById('file-size');
+        const uploadStatus = document.getElementById('upload-status');
+        const cancelUpload = document.getElementById('cancel-upload');
+        
+        browseButton.addEventListener('click', function() {
+          fileInput.click();
+        });
+        
+        uploadContainer.addEventListener('dragover', function(e) {
+          e.preventDefault();
+          uploadContainer.classList.add('border-sporty-red');
+        });
+        
+        uploadContainer.addEventListener('dragleave', function() {
+          uploadContainer.classList.remove('border-sporty-red');
+        });
+        
+        uploadContainer.addEventListener('drop', function(e) {
+          e.preventDefault();
+          uploadContainer.classList.remove('border-sporty-red');
+          
+          if (e.dataTransfer.files.length > 0) {
+            handleFileSelected(e.dataTransfer.files[0]);
+          }
+        });
+        
+        fileInput.addEventListener('change', function() {
+          if (fileInput.files.length > 0) {
+            handleFileSelected(fileInput.files[0]);
+          }
+        });
+        
+        function handleFileSelected(file) {
+          if (!file.type.startsWith('video/')) {
+            alert('Please select a video file');
+            return;
+          }
+          
+          // Display file info
+          fileName.textContent = file.name;
+          fileSize.textContent = formatFileSize(file.size);
+          
+          // Show progress container
+          uploadContainer.classList.add('hidden');
+          progressContainer.classList.remove('hidden');
+          
+          // Simulate upload progress
+          let progress = 0;
+          const interval = setInterval(() => {
+            progress += 5;
+            progressBar.style.width = `${progress}%`;
+            
+            if (progress < 30) {
+              uploadStatus.textContent = 'Preparing upload...';
+            } else if (progress < 90) {
+              uploadStatus.textContent = 'Uploading...';
+            } else {
+              uploadStatus.textContent = 'Processing...';
+            }
+            
+            if (progress >= 100) {
+              clearInterval(interval);
+              uploadStatus.textContent = 'Upload complete!';
+              uploadStatus.classList.add('text-green-500');
+            }
+          }, 300);
+          
+          // Cancel button
+          cancelUpload.addEventListener('click', function() {
+            clearInterval(interval);
+            uploadContainer.classList.remove('hidden');
+            progressContainer.classList.add('hidden');
+            uploadStatus.classList.remove('text-green-500');
+          });
+        }
+        
+        function formatFileSize(bytes) {
+          if (bytes < 1024) return bytes + ' bytes';
+          else if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+          else return (bytes / 1048576).toFixed(1) + ' MB';
+        }
+        
+        // Verification Checklist
+        const submitButton = document.getElementById('submit-button');
+        const consentCheckbox = document.getElementById('consent-checkbox');
+        const rulesCheckbox = document.getElementById('rules-checkbox');
+        const publicCheckbox = document.getElementById('public-checkbox');
+        
+        function checkSubmitEnabled() {
+          if (consentCheckbox.checked && rulesCheckbox.checked && publicCheckbox.checked &&
+              (recordedChunks.length > 0 || progressBar.style.width === '100%')) {
+            submitButton.classList.remove('opacity-50', 'cursor-not-allowed');
+            submitButton.disabled = false;
+          } else {
+            submitButton.classList.add('opacity-50', 'cursor-not-allowed');
+            submitButton.disabled = true;
+          }
+        }
+        
+        [consentCheckbox, rulesCheckbox, publicCheckbox].forEach(checkbox => {
+          checkbox.addEventListener('change', checkSubmitEnabled);
+        });
+        
+        // Submit button
+        submitButton.addEventListener('click', function() {
+          alert('Challenge submission functionality will be implemented in production');
+        });
+      });
+    </script>
+</body>
+</html> 
