@@ -401,7 +401,7 @@
         document.getElementById('challenge-details').style.display = 'none';
         
         // API endpoint for challenges
-        const API_BASE_URL = 'https://api.sportyfy.live/api/v1';
+        const API_BASE_URL = '/api/v1';
         const url = `${API_BASE_URL}/challenges/${id}`;
         
         // Make API request or use placeholder data for demo
@@ -420,6 +420,7 @@
             sport_type: "basketball",
             points_reward: 10,
             badge_reward: "Free Throw Master",
+            image_url: "https://placehold.co/600x400/orange/white?text=Basketball+Challenge",
             equipment: ["Basketball", "Basketball court with free throw line"],
             time_limit: "120 seconds (2 minutes)",
             instructions: "Find a basketball court with a free throw line. Set up your camera to capture both you and the basket. Make 10 consecutive free throws without editing the video.",
@@ -434,6 +435,13 @@
           document.getElementById('challenge-title').textContent = challengeDemo.title;
           document.getElementById('challenge-title-heading').textContent = challengeDemo.title;
           document.getElementById('challenge-description').textContent = challengeDemo.description;
+          
+          // If there's a challenge image element, update it
+          const challengeImage = document.getElementById('challenge-image');
+          if (challengeImage && challengeDemo.image_url) {
+            challengeImage.src = challengeDemo.image_url;
+            challengeImage.alt = challengeDemo.title;
+          }
           
           // Add badges
           document.getElementById('challenge-badges').innerHTML = `

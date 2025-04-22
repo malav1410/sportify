@@ -41,6 +41,9 @@ document.addEventListener('DOMContentLoaded', function() {
     let uploadFile = null;
     let challengeId = null;
     
+    // Add API URL constant
+    const API_BASE_URL = '/api/v1';
+    
     // Initialize the page
     initPage();
     
@@ -414,6 +417,37 @@ document.addEventListener('DOMContentLoaded', function() {
         submitButton.disabled = true;
         submitButton.innerHTML = '<span class="spinner"></span> Submitting...';
         
+        // In a real implementation, we would create a FormData object and upload to the server
+        const formData = new FormData();
+        formData.append('video', uploadFile);
+        
+        // For demo purposes, simulate the API call
+        // In production, use actual API call:
+        // 
+        // fetch(`${API_BASE_URL}/challenges/${challengeId}/submit`, {
+        //   method: 'POST',
+        //   headers: {
+        //     'Authorization': `Bearer ${localStorage.getItem('sportyfy_token')}`
+        //   },
+        //   body: formData
+        // })
+        // .then(response => response.json())
+        // .then(data => {
+        //   // Handle success
+        //   statusMessage.textContent = 'Challenge submitted successfully!';
+        //   statusMessage.classList.add('success');
+        //   setTimeout(() => {
+        //     window.location.href = '/game/challenges';
+        //   }, 2000);
+        // })
+        // .catch(error => {
+        //   // Handle error
+        //   statusMessage.textContent = 'Error submitting challenge. Please try again.';
+        //   statusMessage.classList.add('error');
+        //   submitButton.disabled = false;
+        //   submitButton.textContent = 'Submit Challenge';
+        // });
+        
         // Simulate server upload
         setTimeout(() => {
             // Show success message
@@ -422,7 +456,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Reset form
             setTimeout(() => {
-                window.location.href = '/challenges.html';
+                window.location.href = '/game/challenges';
             }, 2000);
         }, 3000);
     }

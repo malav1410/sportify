@@ -361,6 +361,115 @@ SPORTYFY.LIVE uses Firebase Authentication for user management, with a custom JW
     }
     ```
 
+### Challenges
+
+- **GET /api/v1/challenges**
+  - Description: List all challenges with optional filtering
+  - Query parameters:
+    - `sport_type`: Filter by sport (e.g., basketball, football)
+    - `difficulty`: Filter by difficulty (e.g., easy, medium, hard)
+    - `search`: Search by title or description
+    - `page`: Page number for pagination (default: 1)
+    - `paid`: Filter by paid status (true/false)
+  - Response:
+    ```json
+    {
+      "challenges": [
+        {
+          "id": 123,
+          "title": "Free Throw Challenge",
+          "description": "Complete 10 free throws in a row",
+          "sport_type": "basketball",
+          "difficulty": "easy",
+          "points_reward": 10, 
+          "badge_reward": "Free Throw Master",
+          "is_paid": false,
+          "image_url": "https://example.com/images/free-throw.jpg"
+        }
+      ],
+      "meta": {
+        "current_page": 1,
+        "total_pages": 3,
+        "total_count": 25
+      }
+    }
+    ```
+  - Frontend components:
+    - `js/game/challenges.js` (fetchChallenges function)
+    - `game/challenges.html`
+
+- **GET /api/v1/challenges/:id**
+  - Description: Get details for a specific challenge
+  - Response:
+    ```json
+    {
+      "id": 123,
+      "title": "Free Throw Challenge",
+      "description": "Complete 10 free throws in a row. Video must show continuous shots without editing.",
+      "sport_type": "basketball",
+      "difficulty": "easy",
+      "points_reward": 10,
+      "badge_reward": "Free Throw Master",
+      "is_paid": false,
+      "entry_fee": null,
+      "image_url": "https://example.com/images/free-throw.jpg",
+      "requirements": {
+        "equipment": ["Basketball", "Basketball court with free throw line"],
+        "duration_seconds": 120,
+        "description": "Find a basketball court with a free throw line. Set up your camera to capture both you and the basket. Make 10 consecutive free throws without editing the video."
+      },
+      "verification_rules": {
+        "must_show_full_body": true,
+        "must_show_ball_going_in": true,
+        "continuous_footage": true
+      },
+      "has_submitted": false,
+      "submission_status": null
+    }
+    ```
+  - Frontend components:
+    - `js/game/challenge-detail.js` (fetchChallengeDetails function)
+    - `game/challenge-detail.html`
+
+- **POST /api/v1/challenges/:id/submit**
+  - Description: Submit a challenge attempt
+  - Request headers: Authorization: `Bearer {jwt_token}`
+  - Request body: Multipart form data with video file
+  - Response:
+    ```json
+    {
+      "id": 456,
+      "challenge_id": 123,
+      "status": "pending",
+      "created_at": "2023-01-01T12:00:00Z",
+      "video_url": "https://example.com/videos/submission.mp4"
+    }
+    ```
+  - Frontend components:
+    - `js/game/submit-challenge.js` (submitChallenge function)
+    - `game/submit-challenge.html`
+
+- **GET /api/v1/submissions**
+  - Description: Get user's challenge submissions
+  - Request headers: Authorization: `Bearer {jwt_token}`
+  - Response:
+    ```json
+    {
+      "submissions": [
+        {
+          "id": 456,
+          "challenge_id": 123,
+          "challenge_title": "Free Throw Challenge",
+          "status": "verified",
+          "points_earned": 10,
+          "badge_earned": "Free Throw Master",
+          "created_at": "2023-01-01T12:00:00Z",
+          "video_url": "https://example.com/videos/submission.mp4" 
+        }
+      ]
+    }
+    ```
+
 ## Models
 
 ### User
@@ -409,6 +518,34 @@ SPORTYFY.LIVE uses Firebase Authentication for user management, with a custom JW
 - `sport`: string
 - `goal`: string
 - `location`: string
+- `created_at`: datetime
+- `updated_at`: datetime
+
+### Challenge
+- `id`: integer
+- `title`: string
+- `description`: text
+- `sport_type`: string
+- `difficulty`: string (easy, medium, hard)
+- `points_reward`: integer
+- `badge_reward`: string
+- `is_paid`: boolean
+- `entry_fee`: decimal
+- `image_url`: string
+- `requirements`: jsonb (equipment, duration_seconds, description)
+- `verification_rules`: jsonb (must_show_full_body, must_show_ball_going_in, etc.)
+- `created_at`: datetime
+- `updated_at`: datetime
+
+### Submission
+- `id`: integer
+- `user_id`: integer
+- `challenge_id`: integer
+- `status`: enum (pending, verified, rejected)
+- `video_url`: string
+- `admin_notes`: text
+- `points_earned`: integer
+- `badge_earned`: string
 - `created_at`: datetime
 - `updated_at`: datetime
 

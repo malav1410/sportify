@@ -246,7 +246,48 @@
               
               <!-- Challenges Grid -->
               <div id="challenges-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                <!-- Challenge cards will be loaded here via JavaScript -->
+                <!-- Sample challenge card for layout reference -->
+                <div class="challenge-card bg-sporty-black border-2 border-gray-800 rounded-lg overflow-hidden flex flex-col h-full">
+                  <div class="relative">
+                    <img src="https://placehold.co/600x400/orange/white?text=Basketball+Challenge" alt="Basketball Challenge" class="w-full h-48 object-cover">
+                    <span class="bg-green-900/40 text-green-400 text-xs font-bold px-3 py-1 rounded-full border border-green-500/30 absolute top-3 left-3">Easy</span>
+                  </div>
+                  <div class="p-5 flex-grow">
+                    <h3 class="text-lg font-bold mb-2">Free Throw Challenge</h3>
+                    <p class="text-gray-400 text-sm mb-4">Complete 10 consecutive free throws. Show your precision!</p>
+                    <div class="flex items-center mt-auto">
+                      <span class="flex items-center text-yellow-500">
+                        <i class="fas fa-star mr-1"></i>
+                        <span class="text-white">10 points</span>
+                      </span>
+                      <span class="ml-auto">
+                        <a href="/game/challenge-detail?id=1" class="text-sporty-red hover:underline">Details ›</a>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Sample Premium Challenge Card -->
+                <div class="challenge-card bg-sporty-black border-2 border-gray-800 rounded-lg overflow-hidden flex flex-col h-full relative">
+                  <div class="relative">
+                    <img src="https://placehold.co/600x400/purple/white?text=Premium+Challenge" alt="Celebrity Challenge" class="w-full h-48 object-cover">
+                    <span class="bg-purple-900/40 text-purple-400 text-xs font-bold px-3 py-1 rounded-full border border-purple-500/30 absolute top-3 left-3">Premium</span>
+                  </div>
+                  <div class="p-5 flex-grow">
+                    <h3 class="text-lg font-bold mb-2">Celebrity Cricket Challenge</h3>
+                    <p class="text-gray-400 text-sm mb-4">Face off against cricket legends in this premium challenge!</p>
+                    <div class="flex items-center mt-auto">
+                      <span class="flex items-center text-yellow-500">
+                        <i class="fas fa-star mr-1"></i>
+                        <span class="text-white">50 points</span>
+                      </span>
+                      <span class="ml-auto">
+                        <span class="text-sm font-bold bg-gradient-to-r from-amber-500 to-amber-300 bg-clip-text text-transparent">₹99 Entry</span>
+                      </span>
+                    </div>
+                  </div>
+                  <a href="/game/challenge-detail?id=premium1" class="absolute inset-0"></a>
+                </div>
               </div>
               
               <!-- Pagination -->

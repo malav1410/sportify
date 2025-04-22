@@ -2,7 +2,7 @@
 
 const HighlightDetection = (function() {
     // API endpoint for processing
-    const HIGHLIGHT_API_URL = 'https://api.sportyfy.live/api/v1/cloudflare/process';
+    const HIGHLIGHT_API_URL = '/api/v1/cloudflare/process';
     
     // Process video for highlights
     async function processVideo(videoId) {
