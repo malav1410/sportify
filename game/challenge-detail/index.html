@@ -420,7 +420,7 @@
             sport_type: "basketball",
             points_reward: 10,
             badge_reward: "Free Throw Master",
-            image_url: "https://placehold.co/600x400/orange/white?text=Basketball+Challenge",
+            thumbnail_url: "https://placehold.co/600x400/orange/white?text=Basketball+Challenge",
             equipment: ["Basketball", "Basketball court with free throw line"],
             time_limit: "120 seconds (2 minutes)",
             instructions: "Find a basketball court with a free throw line. Set up your camera to capture both you and the basket. Make 10 consecutive free throws without editing the video.",
@@ -438,8 +438,8 @@
           
           // If there's a challenge image element, update it
           const challengeImage = document.getElementById('challenge-image');
-          if (challengeImage && challengeDemo.image_url) {
-            challengeImage.src = challengeDemo.image_url;
+          if (challengeImage && challengeDemo.thumbnail_url) {
+            challengeImage.src = challengeDemo.thumbnail_url;
             challengeImage.alt = challengeDemo.title;
           }
           
