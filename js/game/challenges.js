@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     
     // API URL - should be configured based on environment
-    const API_BASE_URL = '/api/v1';
+    const API_BASE_URL = 'https://api.sportyfy.live/api/v1';
     
     // Initialize the page
     initChallengePage();

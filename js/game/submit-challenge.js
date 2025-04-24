@@ -41,8 +41,8 @@ document.addEventListener('DOMContentLoaded', function() {
     let uploadFile = null;
     let challengeId = null;
     
-    // Add API URL constant
-    const API_BASE_URL = '/api/v1';
+    // API URL
+    const API_BASE_URL = 'https://api.sportyfy.live/api/v1';
     
     // Initialize the page
     initPage();

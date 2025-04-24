@@ -25,8 +25,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const challengeStatus = document.getElementById('challenge-status');
     const submitChallengeBtn = document.getElementById('submit-challenge-btn');
     
-    // API URL - should be configured based on environment
-    const API_BASE_URL = '/api/v1';
+    // API URL
+    const API_BASE_URL = 'https://api.sportyfy.live/api/v1';
     
     // Get challenge ID from URL
     const challengeId = getChallengeIdFromUrl();
