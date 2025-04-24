@@ -181,7 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         </span>
                         <span class="text-gray-500 text-sm">${challenge.points_reward} pts</span>
                     </div>
-                    <h3 class="text-lg font-bold mb-1">${challenge.title}</h3>
+                    <h3 class="text-lg font-bold mb-1 text-black">${challenge.title}</h3>
                     <p class="text-gray-600 text-sm mb-3 line-clamp-2">${challenge.description}</p>
                     <div class="flex justify-between items-center">
                         <span class="text-xs text-gray-500">${challenge.sport_type.charAt(0).toUpperCase() + challenge.sport_type.slice(1)}</span>
